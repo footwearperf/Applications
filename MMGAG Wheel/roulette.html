@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0a3d2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MMGAG · Club Roulette</title>
+<link rel="icon" type="image/png" href="app-icon.png">
+<link rel="apple-touch-icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #06291f;
+    --bg-mid: #0e4a37;
+    --bg-light: #2b7a59;
+    --gold: #f4c542;
+    --gold-2: #c9962a;
+    --cream: #f6f2e7;
+    --ink: #0b1f17;
+    --ink-soft: #1a3d2f;
+    --rim: rgba(244,197,66,0.55);
+    --shadow-card: 0 12px 40px rgba(0,0,0,0.40);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    color: var(--cream);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: contain;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at 50% -10%, #2b7a59 0%, transparent 55%),
+      radial-gradient(ellipse at 110% 110%, #134e3a 0%, transparent 60%),
+      linear-gradient(180deg, #0e4a37 0%, #06291f 100%);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:
+      calc(env(safe-area-inset-top) + 12px)
+      16px
+      calc(env(safe-area-inset-bottom) + 16px)
+      16px;
+    min-height: 100dvh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* subtle texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,0.06) 0 1.2px, transparent 1.4px),
+      radial-gradient(circle at 78% 68%, rgba(255,255,255,0.045) 0 1.2px, transparent 1.4px),
+      radial-gradient(circle at 50% 90%, rgba(255,255,255,0.04) 0 1.2px, transparent 1.4px);
+    background-size: 46px 46px, 62px 62px, 38px 38px;
+    z-index: 0;
+  }
+
+  header {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: center;
+    z-index: 1;
+    padding-top: 4px;
+  }
+  .logo {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    display: block;
+    border-radius: 22px;
+    box-shadow: var(--shadow-card), 0 0 0 2px rgba(244,197,66,0.55) inset;
+  }
+
+  main {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    flex: 1;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    letter-spacing: 2.2px;
+    margin: 18px 0 4px;
+    font-size: clamp(28px, 7vw, 36px);
+    color: var(--cream);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+  .tagline {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: rgba(246,242,231,0.78);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.45;
+    padding: 0 8px;
+  }
+
+  /* WHEEL */
+  .wheel-wrap {
+    position: relative;
+    width: min(86vw, 380px);
+    aspect-ratio: 1 / 1;
+    margin: 6px 0 14px;
+    transition: filter 0.6s ease;
+    filter: drop-shadow(0 18px 28px rgba(0,0,0,0.55));
+  }
+  .wheel-wrap.idle {
+    animation: idleGlow 2.6s ease-in-out infinite;
+  }
+  @keyframes idleGlow {
+    0%, 100% { filter: drop-shadow(0 18px 28px rgba(0,0,0,0.55)) drop-shadow(0 0 0 rgba(244,197,66,0)); }
+    50%      { filter: drop-shadow(0 18px 28px rgba(0,0,0,0.55)) drop-shadow(0 0 18px rgba(244,197,66,0.45)); }
+  }
+
+  .wheel-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      conic-gradient(from 0deg,
+        var(--gold) 0deg,
+        var(--gold-2) 45deg,
+        var(--gold) 90deg,
+        var(--gold-2) 135deg,
+        var(--gold) 180deg,
+        var(--gold-2) 225deg,
+        var(--gold) 270deg,
+        var(--gold-2) 315deg,
+        var(--gold) 360deg);
+    padding: 8px;
+    box-shadow:
+      0 0 0 3px var(--ink) inset,
+      0 6px 16px rgba(0,0,0,0.5);
+  }
+  .wheel-frame::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.45);
+    pointer-events: none;
+  }
+
+  .wheel {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transform: rotate(0deg);
+    transition: transform 7.6s cubic-bezier(0.13, 0.55, 0.07, 1);
+    will-change: transform;
+    overflow: visible;
+  }
+  .wheel svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 50%;
+  }
+  .spinning .wheel { cursor: progress; }
+
+  /* center cap */
+  .center-cap {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 22%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #efe8cf 55%, #b39f6c 100%);
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.45),
+      0 0 0 3px var(--gold) inset,
+      0 0 0 5px var(--ink) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(11px, 2.8vw, 14px);
+    color: var(--ink);
+    letter-spacing: 1px;
+    text-align: center;
+    line-height: 1;
+    z-index: 2;
+  }
+  .center-cap .cap-text { padding: 0 4px; }
+
+  /* pointer */
+  .pointer {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 30px solid var(--gold);
+    z-index: 3;
+    filter:
+      drop-shadow(0 3px 0 var(--gold-2))
+      drop-shadow(0 6px 6px rgba(0,0,0,0.45));
+  }
+  .pointer::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: -13px;
+    width: 26px;
+    height: 26px;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #efe8cf 55%, var(--gold-2) 100%);
+    border-radius: 50%;
+    border: 3px solid var(--ink);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+  }
+
+  /* RESULT */
+  .result {
+    width: 100%;
+    margin: 6px 0 12px;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.28) 100%);
+    border: 1.5px solid rgba(244,197,66,0.45);
+    border-radius: 18px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.25s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  }
+  .result.celebrate {
+    animation: celebrate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @keyframes celebrate {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 rgba(244,197,66,0); }
+    35%  { transform: scale(1.04); box-shadow: 0 0 30px rgba(244,197,66,0.55); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 rgba(244,197,66,0); }
+  }
+  .result-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .result-text {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(24px, 7vw, 32px);
+    letter-spacing: 1.4px;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+
+  /* BUTTONS */
+  .actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 13px 12px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    border-radius: 13px;
+    border: 1.5px solid rgba(244,197,66,0.4);
+    background: rgba(0,0,0,0.28);
+    color: var(--cream);
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:hover { border-color: rgba(244,197,66,0.7); }
+  .btn:active { transform: scale(0.97); background: rgba(244,197,66,0.18); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-2) 100%);
+    color: var(--ink);
+    border-color: var(--gold-2);
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    box-shadow: 0 4px 14px rgba(244,197,66,0.35);
+  }
+  .btn-primary:hover { border-color: var(--gold-2); }
+  .btn-primary:active { background: var(--gold-2); }
+
+  .footer-note {
+    font-size: 11.5px;
+    color: rgba(246,242,231,0.5);
+    margin: 14px 0 6px;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* LISTEN PILL */
+  .listen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 14px auto 0;
+    padding: 11px 22px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(244,197,66,0.15) 0%, rgba(244,197,66,0.06) 100%);
+    border: 1.5px solid rgba(244,197,66,0.55);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  .listen:hover {
+    background: linear-gradient(180deg, rgba(244,197,66,0.3) 0%, rgba(244,197,66,0.15) 100%);
+    border-color: var(--gold);
+    box-shadow: 0 6px 18px rgba(244,197,66,0.28);
+  }
+  .listen:active { transform: scale(0.97); }
+  .listen svg {
+    width: 18px;
+    height: 18px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .listen .listen-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff4d4d;
+    box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+    animation: livePulse 1.8s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes livePulse {
+    0%   { box-shadow: 0 0 0 0   rgba(255,77,77,0.7); }
+    70%  { box-shadow: 0 0 0 9px rgba(255,77,77,0); }
+    100% { box-shadow: 0 0 0 0   rgba(255,77,77,0); }
+  }
+
+  /* SOCIALS */
+  .socials {
+    width: 100%;
+    margin: 22px 0 4px;
+    text-align: center;
+  }
+  .socials-label {
+    font-size: 11px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.32);
+    border: 1.5px solid rgba(244,197,66,0.45);
+    color: var(--cream);
+    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .social-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold);
+  }
+  .social-link:active { transform: scale(0.94); }
+  .social-link svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+  .social-link.yt:hover {
+    background: #ff0033;
+    border-color: #ff0033;
+    color: #fff;
+  }
+  .social-link.ig:hover {
+    background: linear-gradient(135deg, #feda77 0%, #f58529 25%, #dd2a7b 55%, #8134af 80%, #515bd4 100%);
+    border-color: #dd2a7b;
+    color: #fff;
+  }
+  .social-link.fb:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: #fff;
+  }
+  .social-link.tt:hover {
+    background: linear-gradient(135deg, #25f4ee 0%, #000000 50%, #fe2c55 100%);
+    border-color: #fe2c55;
+    color: #fff;
+  }
+
+  /* MODAL */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 20;
+    animation: fadeIn 0.22s ease;
+  }
+  .modal[hidden] { display: none; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal-inner {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, #15553f 0%, #07271c 100%);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-top: 2px solid var(--gold);
+    padding: 18px 20px calc(20px + env(safe-area-inset-bottom));
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.2, 0.75, 0.2, 1);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(48px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .modal-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    font-size: 26px;
+    margin: 0;
+    color: var(--cream);
+  }
+  .modal-close {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: var(--cream);
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.18); }
+  .history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .history-empty {
+    text-align: center;
+    color: rgba(246,242,231,0.6);
+    padding: 38px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.12) inset;
+  }
+  .history-text { flex: 1; min-width: 0; }
+  .history-club {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .history-time {
+    font-size: 11.5px;
+    color: rgba(246,242,231,0.55);
+    margin-top: 2px;
+  }
+  .history-index {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--gold);
+    min-width: 32px;
+    text-align: right;
+  }
+  .btn-clear {
+    margin-top: 12px;
+    padding: 11px;
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.22);
+    color: rgba(246,242,231,0.85);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-clear:active { background: rgba(220,80,80,0.2); }
+
+  .confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+
+  /* Very small screens */
+  @media (max-width: 360px) {
+    .logo { max-width: 200px; }
+    .btn { padding: 11px 10px; font-size: 13px; }
+    .tagline { font-size: 13px; }
+  }
+
+  /* HOME LINK */
+  .home-bar {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: flex-start;
+    z-index: 2;
+    margin-bottom: 4px;
+  }
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.28);
+    border: 1px solid rgba(244,197,66,0.4);
+    color: var(--cream);
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .home-link:hover { border-color: var(--gold); background: rgba(244,197,66,0.12); }
+  .home-link:active { transform: scale(0.96); }
+  .home-link svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="home-bar">
+  <a class="home-link" href="index.html" aria-label="Back to MMGAG home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19 12H5"/>
+      <path d="M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Home</span>
+  </a>
+</div>
+
+<header>
+  <img class="logo" src="MMGAGLogo.jpeg" alt="Make Me Good At Golf">
+</header>
+
+<main>
+  <h1>Club Roulette</h1>
+  <p class="tagline">Tap the wheel to nominate a club for your playing partner's next shot. Whatever it lands on, that's what they're hitting.</p>
+
+  <div class="wheel-wrap idle" id="wheel-wrap">
+    <div class="pointer" aria-hidden="true"></div>
+    <div class="wheel-frame" aria-hidden="true"></div>
+    <div class="wheel" id="wheel" role="button" tabindex="0" aria-label="Spin the wheel">
+      <svg id="wheel-svg" viewBox="-105 -105 210 210" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+    </div>
+    <div class="center-cap" aria-hidden="true"><span class="cap-text" id="cap-text">TAP<br>TO SPIN</span></div>
+  </div>
+
+  <div class="result" id="result">
+    <span class="result-label" id="result-label">Ready when you are</span>
+    <span class="result-text" id="result-text">Tap the wheel to begin</span>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="btn-history" type="button" aria-label="View spin history">
+      <span aria-hidden="true">📋</span> Last 10 Spins
+    </button>
+    <button class="btn btn-primary" id="btn-spin" type="button">SPIN</button>
+  </div>
+
+  <a class="listen" href="https://shows.acast.com/make-me-good-at-golf" target="_blank" rel="noopener noreferrer" aria-label="Listen to Make Me Good At Golf">
+    <span class="listen-pulse" aria-hidden="true"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+      <path d="M21 19a2 2 0 0 1-2 2h-1v-6h3z"/>
+      <path d="M3 19a2 2 0 0 0 2 2h1v-6H3z"/>
+    </svg>
+    <span>Listen to the Podcast</span>
+  </a>
+
+  <section class="socials" aria-label="Find Make Me Good At Golf on social media">
+    <p class="socials-label">Find us on socials</p>
+    <div class="social-row">
+      <a class="social-link yt" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </a>
+      <a class="social-link ig" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <a class="social-link fb" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
+        </svg>
+      </a>
+      <a class="social-link tt" href="https://shorturl.at/FNKSz" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.12Z"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <p class="footer-note">Make Me Good At Golf</p>
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-inner" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h2 id="modal-title">Last 10 Spins</h2>
+      <button class="modal-close" id="modal-close" aria-label="Close history">✕</button>
+    </div>
+    <ul class="history-list" id="history-list"></ul>
+    <button class="btn-clear" id="btn-clear" type="button">Clear History</button>
+  </div>
+</div>
+
+<canvas class="confetti-canvas" id="confetti" aria-hidden="true"></canvas>
+
+<script>
+(function () {
+  'use strict';
+
+  // Segments are listed in CLOCKWISE order starting from the top (12 o'clock).
+  // `short` and `sub` are rendered inside the slice. `full` is shown in the result + history.
+  const SEGMENTS = [
+    { key: 'DRV', short: 'DRIVER',      sub: '',         full: 'Driver',                          color: '#1d4ed8', edge: '#1e3a8a' },
+    { key: 'FWY', short: 'FAIRWAY',     sub: 'METAL',    full: 'Fairway Metal',                   color: '#15803d', edge: '#14532d' },
+    { key: 'LNG', short: 'LONG IRON',   sub: '/ HYBRID', full: 'Long Iron or Hybrid (1–4)',  color: '#0891b2', edge: '#155e75' },
+    { key: 'MID', short: 'MID IRONS',   sub: '5 – 7',  full: 'Mid Irons (5–7)',         color: '#84cc16', edge: '#4d7c0f' },
+    { key: 'SHT', short: 'SHORT IRONS', sub: '8 – PW', full: 'Short Irons (8–PW)',      color: '#eab308', edge: '#a16207' },
+    { key: 'WDG', short: 'WEDGES',      sub: '',         full: 'Wedges',                          color: '#ea580c', edge: '#9a3412' },
+    { key: 'PUT', short: 'PUTTER',      sub: '',         full: 'Putter',                          color: '#dc2626', edge: '#7f1d1d' }
+  ];
+
+  const SEG_COUNT = SEGMENTS.length;
+  const SEG_ANGLE = 360 / SEG_COUNT; // 51.4286
+  const STORAGE_KEY = 'mmgag-wheel-history-v1';
+  const HISTORY_MAX = 10;
+
+  // SVG geometry (matches viewBox = -105..105)
+  const R_OUTER = 100;
+  const R_INNER = 16;
+  const R_TEXT  = 66;
+
+  // ---------- Helpers ----------
+  function polar(r, deg) {
+    // 0deg = top, clockwise. Returns SVG (x, y).
+    const a = (deg - 90) * Math.PI / 180;
+    return { x: r * Math.cos(a), y: r * Math.sin(a) };
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+
+  function secureRandom() {
+    if (window.crypto && window.crypto.getRandomValues) {
+      const buf = new Uint32Array(1);
+      window.crypto.getRandomValues(buf);
+      return buf[0] / 0x100000000;
+    }
+    return Math.random();
+  }
+
+  // ---------- Build wheel ----------
+  function buildWheel() {
+    const svg = document.getElementById('wheel-svg');
+    let html = '';
+
+    html += [
+      '<defs>',
+        '<radialGradient id="depthOverlay" cx="50%" cy="50%" r="50%">',
+          '<stop offset="55%" stop-color="rgba(255,255,255,0)"/>',
+          '<stop offset="100%" stop-color="rgba(0,0,0,0.32)"/>',
+        '</radialGradient>',
+        '<radialGradient id="centerShine" cx="50%" cy="32%" r="55%">',
+          '<stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>',
+          '<stop offset="55%" stop-color="rgba(255,255,255,0)"/>',
+        '</radialGradient>',
+      '</defs>'
+    ].join('');
+
+    html += '<circle cx="0" cy="0" r="' + R_OUTER + '" fill="#0b1f17"/>';
+
+    SEGMENTS.forEach(function (seg, i) {
+      const a1 = i * SEG_ANGLE;
+      const a2 = (i + 1) * SEG_ANGLE;
+      const p1 = polar(R_OUTER, a1);
+      const p2 = polar(R_OUTER, a2);
+      const largeArc = SEG_ANGLE > 180 ? 1 : 0;
+      const path = 'M 0 0 L ' + p1.x.toFixed(3) + ' ' + p1.y.toFixed(3) +
+                   ' A ' + R_OUTER + ' ' + R_OUTER + ' 0 ' + largeArc + ' 1 ' +
+                   p2.x.toFixed(3) + ' ' + p2.y.toFixed(3) + ' Z';
+      html += '<path d="' + path + '" fill="' + seg.color + '" stroke="' + seg.edge + '" stroke-width="0.6"/>';
+
+      // text — rotated to the bisector of the slice
+      const bisector = a1 + SEG_ANGLE / 2;
+      html += '<g transform="rotate(' + bisector.toFixed(3) + ')">';
+      if (seg.sub) {
+        html += '<text x="0" y="' + (-R_TEXT - 2).toFixed(2) + '" text-anchor="middle" fill="#ffffff"' +
+                ' font-family="Bebas Neue, Anton, Impact, sans-serif" font-size="11.5" letter-spacing="0.55"' +
+                ' style="paint-order:stroke;stroke:rgba(0,0,0,0.35);stroke-width:0.6;">' +
+                escapeHtml(seg.short) + '</text>';
+        html += '<text x="0" y="' + (-R_TEXT + 11).toFixed(2) + '" text-anchor="middle" fill="#ffffff"' +
+                ' font-family="Bebas Neue, Anton, Impact, sans-serif" font-size="9.5" letter-spacing="0.5" opacity="0.95"' +
+                ' style="paint-order:stroke;stroke:rgba(0,0,0,0.3);stroke-width:0.5;">' +
+                escapeHtml(seg.sub) + '</text>';
+      } else {
+        html += '<text x="0" y="' + (-R_TEXT + 4).toFixed(2) + '" text-anchor="middle" fill="#ffffff"' +
+                ' font-family="Bebas Neue, Anton, Impact, sans-serif" font-size="13" letter-spacing="0.7"' +
+                ' style="paint-order:stroke;stroke:rgba(0,0,0,0.35);stroke-width:0.6;">' +
+                escapeHtml(seg.short) + '</text>';
+      }
+      html += '</g>';
+    });
+
+    // divider lines drawn on top so edges crisp up
+    for (let i = 0; i < SEG_COUNT; i++) {
+      const a = i * SEG_ANGLE;
+      const p = polar(R_OUTER, a);
+      html += '<line x1="0" y1="0" x2="' + p.x.toFixed(3) + '" y2="' + p.y.toFixed(3) +
+              '" stroke="rgba(255,255,255,0.4)" stroke-width="0.7"/>';
+    }
+
+    // golden outer ring + depth + center shadow
+    html += '<circle cx="0" cy="0" r="' + (R_OUTER - 1.2) + '" fill="none" stroke="#f4c542" stroke-width="1.4" opacity="0.65"/>';
+    html += '<circle cx="0" cy="0" r="' + R_OUTER + '" fill="url(#depthOverlay)" pointer-events="none"/>';
+    html += '<circle cx="0" cy="0" r="' + R_OUTER + '" fill="url(#centerShine)" pointer-events="none"/>';
+    html += '<circle cx="0" cy="0" r="' + (R_INNER + 6) + '" fill="rgba(0,0,0,0.35)"/>';
+
+    svg.innerHTML = html;
+  }
+
+  // ---------- History (localStorage) ----------
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function saveHistory(arr) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); } catch (e) {}
+  }
+  function pushHistory(seg) {
+    const arr = loadHistory();
+    arr.unshift({ key: seg.key, full: seg.full, color: seg.color, ts: Date.now() });
+    while (arr.length > HISTORY_MAX) arr.pop();
+    saveHistory(arr);
+  }
+
+  // ---------- Spin ----------
+  const wheelEl   = document.getElementById('wheel');
+  const wrapEl    = document.getElementById('wheel-wrap');
+  const capText   = document.getElementById('cap-text');
+  const resultEl  = document.getElementById('result');
+  const resultLbl = document.getElementById('result-label');
+  const resultTxt = document.getElementById('result-text');
+  const spinBtn   = document.getElementById('btn-spin');
+
+  let totalRotation = 0;
+  let spinning = false;
+
+  function spin() {
+    if (spinning) return;
+    spinning = true;
+    document.body.classList.add('spinning');
+    wrapEl.classList.remove('idle');
+    spinBtn.disabled = true;
+    capText.innerHTML = 'GO!';
+    resultLbl.textContent = 'Spinning';
+    resultTxt.textContent = '…';
+    resultEl.classList.remove('celebrate');
+
+    // Random winner with crypto-grade randomness
+    const winnerIdx = Math.floor(secureRandom() * SEG_COUNT);
+    const winner = SEGMENTS[winnerIdx];
+
+    // Compass center of winning segment (0 = top, clockwise)
+    const segCenter = winnerIdx * SEG_ANGLE + SEG_ANGLE / 2;
+    // Land somewhere inside the slice for organic feel
+    const jitter = (secureRandom() - 0.5) * (SEG_ANGLE * 0.7);
+    // Rotating the wheel clockwise by (360 - segCenter) brings the winning segment under the pointer
+    const targetMod = ((360 - segCenter + jitter) % 360 + 360) % 360;
+
+    // 6 - 8 full revolutions
+    const extraSpins = 6 + Math.floor(secureRandom() * 3);
+    const currentMod = ((totalRotation % 360) + 360) % 360;
+    const delta = extraSpins * 360 + ((targetMod - currentMod + 360) % 360);
+    totalRotation += delta;
+
+    // Per-spin duration between 7.0 and 8.0 seconds
+    const duration = 7000 + Math.floor(secureRandom() * 1000);
+    wheelEl.style.transitionDuration = duration + 'ms';
+    // Force reflow so the new duration is picked up before the transform change
+    void wheelEl.offsetWidth;
+
+    wheelEl.style.transform = 'rotate(' + totalRotation + 'deg)';
+
+    if (navigator.vibrate) { try { navigator.vibrate(25); } catch (e) {} }
+
+    const onEnd = function (e) {
+      if (e.propertyName && e.propertyName !== 'transform') return;
+      wheelEl.removeEventListener('transitionend', onEnd);
+      spinning = false;
+      document.body.classList.remove('spinning');
+      spinBtn.disabled = false;
+      capText.innerHTML = 'SPIN<br>AGAIN';
+      resultLbl.textContent = 'Play this shot with';
+      resultTxt.textContent = winner.full;
+      resultEl.style.borderColor = winner.color;
+      resultEl.classList.remove('celebrate');
+      void resultEl.offsetWidth;
+      resultEl.classList.add('celebrate');
+
+      pushHistory(winner);
+
+      if (navigator.vibrate) { try { navigator.vibrate([60, 30, 80]); } catch (e) {} }
+      burstConfetti(winner.color);
+    };
+    wheelEl.addEventListener('transitionend', onEnd);
+  }
+
+  // ---------- Confetti ----------
+  const confettiCanvas = document.getElementById('confetti');
+  const ctx = confettiCanvas.getContext('2d');
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+
+  function resizeCanvas() {
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    confettiCanvas.width  = window.innerWidth  * dpr;
+    confettiCanvas.height = window.innerHeight * dpr;
+    confettiCanvas.style.width  = window.innerWidth  + 'px';
+    confettiCanvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  let particles = [];
+  let confettiRunning = false;
+
+  function burstConfetti(accent) {
+    const palette = [accent, '#f4c542', '#ffffff', '#84cc16', '#15803d', '#ea580c'];
+    const rect = wrapEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top  + rect.height * 0.42;
+    for (let i = 0; i < 90; i++) {
+      const angle = -Math.PI / 2 + (secureRandom() - 0.5) * Math.PI * 0.95;
+      const speed = 4 + secureRandom() * 8;
+      particles.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed + (secureRandom() - 0.5) * 2,
+        vy: Math.sin(angle) * speed,
+        gravity: 0.18,
+        size: 5 + secureRandom() * 6,
+        color: palette[Math.floor(secureRandom() * palette.length)],
+        rot: secureRandom() * Math.PI * 2,
+        vrot: (secureRandom() - 0.5) * 0.35,
+        life: 90 + secureRandom() * 60
+      });
+    }
+    if (!confettiRunning) requestAnimationFrame(animateConfetti);
+  }
+
+  function animateConfetti() {
+    confettiRunning = true;
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    particles = particles.filter(function (p) {
+      return p.life > 0 && p.y < window.innerHeight + 40;
+    });
+    particles.forEach(function (p) {
+      p.vy += p.gravity;
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.rot += p.vrot;
+      p.life -= 1;
+      const alpha = Math.min(1, p.life / 50);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size * 0.5);
+      ctx.restore();
+    });
+    if (particles.length > 0) {
+      requestAnimationFrame(animateConfetti);
+    } else {
+      confettiRunning = false;
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+  }
+
+  // ---------- Modal ----------
+  const modal = document.getElementById('modal');
+  const historyList = document.getElementById('history-list');
+
+  function openModal() {
+    renderHistory();
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  function formatTime(ts) {
+    try {
+      return new Date(ts).toLocaleString(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      });
+    } catch (e) { return ''; }
+  }
+
+  function renderHistory() {
+    const arr = loadHistory();
+    if (arr.length === 0) {
+      historyList.innerHTML = '<li class="history-empty">No spins yet.<br>Give the wheel a tap and your results will land here.</li>';
+      return;
+    }
+    historyList.innerHTML = arr.map(function (h, idx) {
+      return '<li class="history-item">' +
+        '<span class="history-dot" style="background:' + escapeHtml(h.color || '#888') + '"></span>' +
+        '<div class="history-text">' +
+          '<div class="history-club">' + escapeHtml(h.full || h.key || '—') + '</div>' +
+          '<div class="history-time">' + escapeHtml(formatTime(h.ts)) + '</div>' +
+        '</div>' +
+        '<div class="history-index">#' + (idx + 1) + '</div>' +
+      '</li>';
+    }).join('');
+  }
+
+  // ---------- Init ----------
+  function init() {
+    buildWheel();
+
+    wheelEl.addEventListener('click', spin);
+    wheelEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); spin(); }
+    });
+    spinBtn.addEventListener('click', spin);
+
+    document.getElementById('btn-history').addEventListener('click', openModal);
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    document.getElementById('btn-clear').addEventListener('click', function () {
+      const arr = loadHistory();
+      if (arr.length === 0) return;
+      if (confirm('Clear the spin history on this device?')) {
+        saveHistory([]);
+        renderHistory();
+      }
+    });
+
+    // Prevent iOS double-tap zoom on the wheel
+    let lastTouch = 0;
+    wheelEl.addEventListener('touchend', function (e) {
+      const now = Date.now();
+      if (now - lastTouch < 400) e.preventDefault();
+      lastTouch = now;
+    }, { passive: false });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
