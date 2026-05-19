@@ -1,140 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="theme-color" content="#f3ecd9" />
-<title>Make Me Good at Golf Reverse Twister</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b365d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="MMGAG Reverse Twister — spin to take a hand or foot out of play. Make your playing partner's next shot a one-handed (or one-footed) challenge.">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'self';">
+<title>MMGAG · Reverse Twister</title>
 <link rel="icon" type="image/png" href="app-icon.png">
 <link rel="apple-touch-icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
   :root {
     --cream: #f3ecd9;
+    --cream-soft: #faf6e9;
+    --cream-deep: #e6dec4;
     --navy: #1b365d;
-    --navy-dark: #122444;
-    --red: #e63946;
-    --blue: #1d4ed8;
+    --navy-deep: #122444;
+    --navy-bright: #2752a1;
+    --accent: #e63946;
     --yellow: #facc15;
     --green: #16a34a;
-    --shadow: 0 10px 30px rgba(0,0,0,0.18);
+    --blue: #1d4ed8;
+    --ink: rgba(27, 54, 93, 0.85);
   }
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+  /* Scroll-safe root setup: clip horizontal overflow on html only, leave body to scroll vertically naturally */
+  html {
+    overflow-x: hidden;
+  }
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
     background: var(--cream);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     color: var(--navy);
-    overflow-x: hidden;
-    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
   }
-
   body {
-    min-height: 100vh;
     min-height: 100dvh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding:
       calc(env(safe-area-inset-top) + 12px)
-      16px
-      calc(env(safe-area-inset-bottom) + 16px)
-      16px;
+      14px
+      calc(env(safe-area-inset-bottom) + 18px);
     background:
-      radial-gradient(circle at 20% 0%, #fff5dc 0%, transparent 50%),
-      radial-gradient(circle at 80% 100%, #ede2c4 0%, transparent 50%),
+      repeating-linear-gradient(135deg, transparent 0 22px, rgba(27,54,93,0.03) 22px 23px),
       var(--cream);
+    position: relative;
   }
 
-  .app {
+  /* HOME LINK */
+  .home-bar {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 6px;
+  }
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--cream-soft);
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 3px 3px 0 var(--navy);
+  }
+  .home-link:hover {
+    background: var(--cream);
+    transform: translate(-1px,-1px);
+    box-shadow: 4px 4px 0 var(--navy);
+  }
+  .home-link:active { transform: scale(0.96); }
+  .home-link svg { width: 14px; height: 14px; }
+
+  /* LOGO */
+  header {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+  }
+  .logo {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 var(--navy);
+    border: 2px solid var(--navy);
+  }
+
+  main {
     width: 100%;
     max-width: 480px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    flex: 1;
   }
 
-  .logo-wrap {
+  /* TITLE BLOCK */
+  .title-block {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 6px;
-  }
-
-  .logo-wrap img {
-    width: 75%;
-    max-width: 280px;
-    height: auto;
+    margin: 20px 0 22px;
+    padding: 20px 22px 22px;
+    background: var(--navy);
+    color: var(--cream);
     border-radius: 18px;
-    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 var(--accent);
   }
-
-  .title {
-    text-align: center;
-    margin: 0;
-    line-height: 1;
+  .title-block::before {
+    content: '';
+    position: absolute;
+    right: -28px; top: -28px;
+    width: 90px; height: 90px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.85;
   }
-
-  .title .small {
-    display: block;
-    font-size: 14px;
-    letter-spacing: 0.35em;
+  .title-block .eyebrow {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--cream);
+    color: var(--navy);
+    font-weight: 800;
+    font-size: 9.5px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--navy);
-    opacity: 0.7;
-    margin-bottom: 6px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .title-block h1 {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    font-size: clamp(34px, 9vw, 44px);
+    line-height: 0.95;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--cream);
+    position: relative;
+    z-index: 1;
+  }
+  .title-block h1 .accent { color: var(--accent); }
+  .title-block .tagline {
+    margin: 14px 0 0;
+    font-size: 14px;
+    color: rgba(246,242,231,0.88);
+    line-height: 1.55;
+    max-width: 360px;
+    position: relative;
+    z-index: 1;
   }
 
-  .title .big {
-    display: block;
-    font-family: 'Brush Script MT', 'Snell Roundhand', cursive;
-    font-size: clamp(38px, 11vw, 56px);
-    line-height: 1;
-    color: var(--navy);
-    transform: rotate(-3deg);
-    text-shadow: 2px 3px 0 rgba(27, 54, 93, 0.12);
-    white-space: nowrap;
-  }
-
+  /* WHEEL STAGE */
   .stage {
     position: relative;
-    width: min(86vw, 360px);
+    width: min(78vw, 340px);
     aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 4px 0 18px;
+    flex-shrink: 0;
+    filter: drop-shadow(5px 5px 0 var(--navy));
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-
   .pointer {
     position: absolute;
-    top: -6px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 18px solid transparent;
-    border-right: 18px solid transparent;
-    border-top: 28px solid var(--navy);
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 28px solid var(--accent);
     z-index: 5;
-    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+    filter: drop-shadow(0 3px 0 var(--navy-deep));
   }
-
   .pointer::after {
     content: '';
     position: absolute;
-    top: -34px;
-    left: -8px;
-    width: 16px;
-    height: 16px;
-    background: var(--navy);
+    top: -32px;
+    left: -11px;
+    width: 22px;
+    height: 22px;
+    background: var(--cream);
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    border: 3px solid var(--navy);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
   }
-
   .wheel {
     position: relative;
     width: 100%;
@@ -142,103 +217,118 @@
     border-radius: 50%;
     background:
       conic-gradient(
-        var(--red) 0deg 90deg,
+        var(--accent) 0deg 90deg,
         var(--yellow) 90deg 180deg,
         var(--green) 180deg 270deg,
         var(--blue) 270deg 360deg
       );
     box-shadow:
-      0 0 0 8px var(--navy),
-      0 0 0 12px var(--cream),
-      0 0 0 14px rgba(27, 54, 93, 0.5),
-      0 18px 40px rgba(0,0,0,0.25);
+      0 0 0 4px var(--navy),
+      0 0 0 7px var(--cream),
+      0 0 0 9px var(--navy);
     transition: transform 5s cubic-bezier(0.17, 0.67, 0.21, 1);
     transform: rotate(0deg);
   }
-
   .wheel .label {
     position: absolute;
     color: #fff;
-    font-weight: 800;
-    font-size: 13px;
-    letter-spacing: 0.08em;
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: clamp(13px, 3.7vw, 16px);
+    letter-spacing: 0.6px;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
-    width: 110px;
-    line-height: 1.15;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.45);
+    width: 38%;
+    line-height: 1;
     pointer-events: none;
   }
-
-  /* Quadrants are arranged so each label sits centered inside its colored wedge.
-     With pointer at top (0°), quadrant 1 (0–90°) is the top-right wedge.
-     Each label is centered at the visual centroid of its quarter circle. */
-  .label.q1 { top: 30%; left: 70%; transform: translate(-50%, -50%); }  /* Top-right: RED */
-  .label.q2 { top: 70%; left: 70%; transform: translate(-50%, -50%); }  /* Bottom-right: YELLOW */
-  .label.q3 { top: 70%; left: 30%; transform: translate(-50%, -50%); }  /* Bottom-left: GREEN */
-  .label.q4 { top: 30%; left: 30%; transform: translate(-50%, -50%); }  /* Top-left: BLUE */
-
-  .label.q2 { color: #1b365d; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+  /* Labels positioned by quadrant centre (≈ 25%/25%, 25%/75%, etc.) */
+  .label.q1 { top: 16%; right: 6%;  }   /* top-right wedge */
+  .label.q2 { bottom: 16%; right: 6%; }  /* bottom-right wedge */
+  .label.q3 { bottom: 16%; left: 6%;  }  /* bottom-left wedge */
+  .label.q4 { top: 16%; left: 6%;   }   /* top-left wedge */
+  .label.q2 {
+    color: var(--navy);
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+  }
 
   .hub {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 22%;
-    height: 22%;
+    width: 26%;
+    height: 26%;
     border-radius: 50%;
-    background: var(--cream);
-    border: 6px solid var(--navy);
-    box-shadow: inset 0 4px 8px rgba(0,0,0,0.12);
+    background: var(--cream-soft);
+    border: 4px solid var(--navy);
+    box-shadow:
+      inset 0 0 0 3px var(--cream),
+      inset 0 0 0 5px var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 4;
     pointer-events: none;
   }
-
   .hub-text {
-    font-weight: 900;
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: clamp(11px, 3vw, 13px);
+    letter-spacing: 0.12em;
     color: var(--navy);
     text-align: center;
-    line-height: 1.1;
+    line-height: 1.05;
+    text-transform: uppercase;
   }
 
-  /* Spin button */
+  /* STATUS LINE */
+  .status {
+    min-height: 22px;
+    font-size: 11.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-align: center;
+    font-weight: 700;
+    margin: 0 0 16px;
+    padding: 0 8px;
+    line-height: 1.5;
+  }
+
+  /* SPIN BUTTON */
   .spin-btn {
     appearance: none;
-    border: none;
-    background: var(--navy);
+    border: 2px solid var(--navy);
+    background: var(--accent);
     color: var(--cream);
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 0.25em;
-    padding: 18px 48px;
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: 0.28em;
+    padding: 14px 32px;
     border-radius: 999px;
-    box-shadow: 0 8px 0 var(--navy-dark), 0 12px 24px rgba(0,0,0,0.25);
+    box-shadow: 4px 4px 0 var(--navy);
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
-    margin-top: 4px;
-    width: 80%;
-    max-width: 280px;
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+    width: min(80%, 280px);
+    text-transform: uppercase;
   }
-
+  .spin-btn:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--navy); }
   .spin-btn:active:not(:disabled) {
-    transform: translateY(4px);
-    box-shadow: 0 4px 0 var(--navy-dark), 0 6px 12px rgba(0,0,0,0.25);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--navy);
   }
-
   .spin-btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
   }
 
-  /* Result overlay */
+  /* OVERLAY */
   .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(18, 36, 68, 0.78);
+    background: rgba(27, 54, 93, 0.75);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     display: flex;
@@ -250,88 +340,86 @@
     pointer-events: none;
     transition: opacity 0.3s ease;
   }
-
-  .overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .overlay[aria-hidden="true"] .result-card { pointer-events: none; }
 
   .result-card {
     width: 100%;
     max-width: 380px;
-    background: var(--cream);
-    border-radius: 24px;
-    padding: 30px 24px 26px;
+    background: var(--cream-soft);
+    border: 3px solid var(--navy);
+    border-radius: 22px;
+    padding: 28px 24px 22px;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    box-shadow: 8px 8px 0 var(--accent);
     transform: scale(0.5) rotate(-6deg);
     opacity: 0;
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
     position: relative;
     overflow: hidden;
   }
-
   .overlay.show .result-card {
     transform: scale(1) rotate(0deg);
     opacity: 1;
   }
-
   .result-color-bar {
     width: 64px;
     height: 64px;
     border-radius: 50%;
     margin: 0 auto 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    box-shadow: 0 0 0 3px var(--cream-soft), 0 0 0 5px var(--navy);
     animation: bouncein 0.6s 0.15s both;
   }
-
   .result-eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.3em;
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--navy);
-    opacity: 0.7;
+    color: var(--ink);
+    font-weight: 800;
     margin: 0 0 6px;
   }
-
   .result-text {
-    font-size: 30px;
-    font-weight: 900;
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: 34px;
     margin: 0 0 4px;
     color: var(--navy);
-    line-height: 1.1;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     animation: pop 0.5s 0.25s both;
   }
-
   .result-sub {
-    font-size: 14px;
-    letter-spacing: 0.12em;
+    font-size: 11.5px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--navy);
-    opacity: 0.6;
-    margin: 6px 0 18px;
+    color: var(--accent);
+    font-weight: 800;
+    margin: 8px 0 18px;
   }
-
   .again-btn {
     appearance: none;
-    border: none;
+    border: 2px solid var(--navy);
     background: var(--navy);
     color: var(--cream);
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 0.2em;
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0.22em;
     padding: 12px 28px;
     border-radius: 999px;
     cursor: pointer;
-    box-shadow: 0 4px 0 var(--navy-dark);
+    box-shadow: 4px 4px 0 var(--accent);
+    text-transform: uppercase;
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
   }
-
+  .again-btn:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--accent); }
   .again-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 var(--navy-dark);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--accent);
   }
 
-  /* Confetti pieces */
+  /* CONFETTI */
   .confetti {
     position: absolute;
     width: 10px;
@@ -340,305 +428,269 @@
     opacity: 0;
     border-radius: 2px;
   }
-
-  .overlay.show .confetti {
-    animation: fall 1.8s linear forwards;
-  }
-
-  /* Status text under wheel */
-  .status {
-    min-height: 22px;
-    font-size: 14px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--navy);
-    opacity: 0.7;
-    text-align: center;
-  }
-
-  /* Pulse during spin */
-  .stage.spinning .pointer {
-    animation: shake 0.12s infinite;
-  }
-
-  /* Animations */
-  @keyframes pop {
-    0% { transform: scale(0.6); opacity: 0; }
-    60% { transform: scale(1.15); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  @keyframes bouncein {
-    0% { transform: scale(0); }
-    60% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(-50%) rotate(0deg); }
-    50% { transform: translateX(-50%) rotate(6deg); }
-  }
-
-  @keyframes fall {
-    0% { transform: translate(0, -30px) rotate(0deg); opacity: 1; }
-    100% { transform: translate(var(--dx, 0), 480px) rotate(var(--rot, 720deg)); opacity: 0; }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 8px var(--navy), 0 0 0 12px var(--cream), 0 0 0 14px rgba(27, 54, 93, 0.5), 0 18px 40px rgba(0,0,0,0.25); }
-    50% { box-shadow: 0 0 0 8px var(--navy), 0 0 0 14px var(--cream), 0 0 0 22px rgba(27, 54, 93, 0.25), 0 22px 50px rgba(0,0,0,0.3); }
-  }
-
-  .footer {
-    margin: 14px 0 6px;
-    text-align: center;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--navy);
-    opacity: 0.45;
-  }
-
-  /* HOME LINK */
-  .home-bar {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    margin: -4px 0 -8px;
-  }
-  .home-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: rgba(27, 54, 93, 0.08);
-    border: 1px solid rgba(27, 54, 93, 0.35);
-    color: var(--navy);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .home-link:hover { background: rgba(27, 54, 93, 0.16); border-color: var(--navy); }
-  .home-link:active { transform: scale(0.96); }
-  .home-link svg { width: 14px; height: 14px; }
+  .overlay.show .confetti { animation: fall 1.8s linear forwards; }
 
   /* SOCIALS */
   .socials {
     width: 100%;
-    margin: 14px 0 4px;
+    margin: 24px 0 4px;
     text-align: center;
   }
   .socials-label {
-    font-size: 11px;
-    letter-spacing: 0.24em;
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--navy);
-    opacity: 0.7;
-    font-weight: 700;
     margin: 0 0 10px;
   }
   .social-row {
     display: flex;
     justify-content: center;
-    gap: 14px;
+    gap: 12px;
   }
   .social-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(27, 54, 93, 0.08);
-    border: 1.5px solid rgba(27, 54, 93, 0.4);
-    color: var(--navy);
-    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--navy);
+    border: 2px solid var(--navy);
+    color: var(--cream);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
     text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
+    box-shadow: 3px 3px 0 var(--accent);
   }
-  .social-link:hover {
-    transform: translateY(-2px);
-    border-color: var(--navy);
+  .social-link:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--accent); }
+  .social-link:active { transform: scale(0.96); }
+  .social-link svg { width: 22px; height: 22px; display: block; }
+
+  .footer-note {
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    margin: 18px 0 4px;
+    text-align: center;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    opacity: 0.65;
   }
-  .social-link:active { transform: scale(0.94); }
-  .social-link svg {
-    width: 22px;
-    height: 22px;
-    display: block;
+
+  /* Wheel/pointer shake while spinning */
+  .stage.spinning { cursor: progress; }
+  .stage.spinning .pointer { animation: shake 0.12s infinite; }
+
+  @keyframes pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
   }
-  .social-link.yt:hover {
-    background: #ff0033;
-    border-color: #ff0033;
-    color: #fff;
+  @keyframes bouncein {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
   }
-  .social-link.ig:hover {
-    background: linear-gradient(135deg, #feda77 0%, #f58529 25%, #dd2a7b 55%, #8134af 80%, #515bd4 100%);
-    border-color: #dd2a7b;
-    color: #fff;
+  @keyframes shake {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(6deg); }
   }
-  .social-link.fb:hover {
-    background: #1877f2;
-    border-color: #1877f2;
-    color: #fff;
+  @keyframes fall {
+    0% { transform: translate(0, -30px) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--dx, 0), 480px) rotate(var(--rot, 720deg)); opacity: 0; }
   }
-  .social-link.tt:hover {
-    background: linear-gradient(135deg, #25f4ee 0%, #000000 50%, #fe2c55 100%);
-    border-color: #fe2c55;
-    color: #fff;
+
+  /* Keyboard focus ring */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* Respect users who prefer less motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Small screens: tighten things up so everything fits comfortably */
+  @media (max-width: 380px) {
+    .logo { max-width: 170px; }
+    .title-block { padding: 14px 16px; }
+    .stage { width: min(82vw, 320px); margin: 4px 0 10px; }
+    .spin-btn { font-size: 18px; padding: 13px 26px; }
+    .footer-note { font-size: 12px; }
   }
 </style>
 </head>
 <body>
-  <div class="app">
-    <div class="home-bar">
-      <a class="home-link" href="index.html" aria-label="Back to MMGAG home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M19 12H5"/>
-          <path d="M12 19l-7-7 7-7"/>
+
+<div class="home-bar">
+  <a class="home-link" href="index.html" aria-label="Back to MMGAG home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19 12H5"/>
+      <path d="M12 19l-7-7 7-7"/>
+    </svg>
+    <span>Home</span>
+  </a>
+</div>
+
+<header>
+  <img class="logo" src="MMGAGLogo.jpeg" alt="Make Me Good At Golf">
+</header>
+
+<main>
+
+  <section class="title-block">
+    <span class="eyebrow">02 · The Game</span>
+    <h1>Reverse<br><span class="accent">Twister.</span></h1>
+    <p class="tagline">Spin to take one of their limbs out of play. They have to make this shot without it.</p>
+  </section>
+
+  <div class="stage" id="stage" role="button" tabindex="0" aria-label="Spin the wheel">
+    <div class="pointer" aria-hidden="true"></div>
+    <div class="wheel" id="wheel" aria-hidden="true">
+      <div class="label q1">LEFT<br>HAND</div>
+      <div class="label q2">RIGHT<br>HAND</div>
+      <div class="label q3">LEFT<br>FOOT</div>
+      <div class="label q4">RIGHT<br>FOOT</div>
+    </div>
+    <div class="hub" aria-hidden="true">
+      <span class="hub-text" id="hubText">SPIN<br>IT</span>
+    </div>
+  </div>
+
+  <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true">Tap spin to give your mate a handicap</div>
+
+  <button class="spin-btn" id="spinBtn" type="button">SPIN</button>
+
+  <section class="socials" aria-label="Find Make Me Good At Golf on social media">
+    <p class="socials-label">Find us on socials</p>
+    <div class="social-row">
+      <a class="social-link" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
         </svg>
-        <span>Home</span>
+      </a>
+      <a class="social-link" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <a class="social-link" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
+        </svg>
+      </a>
+      <a class="social-link" href="https://shorturl.at/FNKSz" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.12Z"/>
+        </svg>
       </a>
     </div>
+  </section>
 
-    <div class="logo-wrap">
-      <img src="MMGAGLogo.jpeg" alt="Make Me Good At Golf" />
-    </div>
+  <p class="footer-note">M · M · G · A · G</p>
+</main>
 
-    <h1 class="title">
-      <span class="big">Reverse Twister</span>
-    </h1>
-
-    <div class="stage" id="stage">
-      <div class="pointer"></div>
-      <div class="wheel" id="wheel">
-        <div class="label q1">LEFT<br/>HAND</div>
-        <div class="label q2">RIGHT<br/>HAND</div>
-        <div class="label q3">LEFT<br/>FOOT</div>
-        <div class="label q4">RIGHT<br/>FOOT</div>
-      </div>
-      <div class="hub">
-        <span class="hub-text">SPIN<br/>IT</span>
-      </div>
-    </div>
-
-    <div class="status" id="status">Tap spin to give your mate a handicap</div>
-
-    <button class="spin-btn" id="spinBtn">SPIN</button>
-
-    <section class="socials" aria-label="Find Make Me Good At Golf on social media">
-      <p class="socials-label">Find us on socials</p>
-      <div class="social-row">
-        <a class="social-link yt" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on YouTube">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-        </a>
-        <a class="social-link ig" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-          </svg>
-        </a>
-        <a class="social-link fb" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Facebook">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
-          </svg>
-        </a>
-        <a class="social-link tt" href="https://shorturl.at/FNKSz" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on TikTok">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.12Z"/>
-          </svg>
-        </a>
-      </div>
-    </section>
-
-    <div class="footer">For entertainment on the fairway only</div>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="resultText" aria-hidden="true">
+  <div class="result-card" id="resultCard">
+    <div class="result-color-bar" id="resultColor" aria-hidden="true"></div>
+    <p class="result-eyebrow">Your playing partner must play their</p>
+    <h2 class="result-text" id="resultText">—</h2>
+    <p class="result-sub">Out of play</p>
+    <button class="again-btn" id="againBtn" type="button">Spin again</button>
   </div>
-
-  <div class="overlay" id="overlay">
-    <div class="result-card" id="resultCard">
-      <div class="result-color-bar" id="resultColor"></div>
-      <p class="result-eyebrow">Your playing partner must play their</p>
-      <h2 class="result-text" id="resultText">-</h2>
-      <p class="result-sub">Out of play</p>
-      <button class="again-btn" id="againBtn">SPIN AGAIN</button>
-    </div>
-  </div>
+</div>
 
 <script>
-  /*
-    Wheel quadrant layout (with pointer at the top, 0deg):
-    - The pointer points at the segment whose angular range straddles the
-      top of the wheel. With our conic-gradient, the segments are:
-        0–90deg   : RED    (top-right wedge)
-        90–180deg : YELLOW (bottom-right wedge)
-        180–270deg: GREEN  (bottom-left wedge)
-        270–360deg: BLUE   (top-left wedge)
-    - The conic-gradient starts at 12 o'clock and sweeps clockwise.
-    - When the wheel rotates clockwise by angle R (CSS transform: rotate),
-      the segment originally centered at angle C ends up centered at C + R.
-    - The pointer is at the top (angle 0). For the pointer to land on a
-      segment originally centered at C, we need C + R = 360k, i.e.
-      R = -C mod 360. We'll add a few full spins for drama.
-  */
+(function () {
+  'use strict';
+
   const RESULTS = [
-    { id: 'LEFT_HAND',  text: 'Left Hand',  color: '#e63946', segmentCenter: 45  },  // RED
-    { id: 'RIGHT_HAND', text: 'Right Hand', color: '#facc15', segmentCenter: 135 }, // YELLOW
-    { id: 'LEFT_FOOT',  text: 'Left Foot',  color: '#16a34a', segmentCenter: 225 }, // GREEN
-    { id: 'RIGHT_FOOT', text: 'Right Foot', color: '#1d4ed8', segmentCenter: 315 }, // BLUE
+    { id: 'LEFT_HAND',  text: 'Left Hand',  color: '#e63946', segmentCenter: 45  },
+    { id: 'RIGHT_HAND', text: 'Right Hand', color: '#facc15', segmentCenter: 135 },
+    { id: 'LEFT_FOOT',  text: 'Left Foot',  color: '#16a34a', segmentCenter: 225 },
+    { id: 'RIGHT_FOOT', text: 'Right Foot', color: '#1d4ed8', segmentCenter: 315 }
   ];
 
-  const wheel = document.getElementById('wheel');
-  const stage = document.getElementById('stage');
-  const spinBtn = document.getElementById('spinBtn');
-  const status = document.getElementById('status');
-  const overlay = document.getElementById('overlay');
-  const resultText = document.getElementById('resultText');
+  const wheel       = document.getElementById('wheel');
+  const stage       = document.getElementById('stage');
+  const spinBtn     = document.getElementById('spinBtn');
+  const statusEl    = document.getElementById('status');
+  const overlay     = document.getElementById('overlay');
+  const resultText  = document.getElementById('resultText');
   const resultColor = document.getElementById('resultColor');
-  const resultCard = document.getElementById('resultCard');
-  const againBtn = document.getElementById('againBtn');
+  const resultCard  = document.getElementById('resultCard');
+  const againBtn    = document.getElementById('againBtn');
+  const hubText     = document.getElementById('hubText');
 
   let currentRotation = 0;
   let isSpinning = false;
   const SPIN_DURATION_MS = 5000;
 
+  function secureRandom() {
+    if (window.crypto && window.crypto.getRandomValues) {
+      const buf = new Uint32Array(1);
+      window.crypto.getRandomValues(buf);
+      return buf[0] / 0x100000000;
+    }
+    return Math.random();
+  }
+
+  function setHubText(line1, line2) {
+    // Build textContent + <br> without using innerHTML
+    hubText.textContent = '';
+    hubText.appendChild(document.createTextNode(line1));
+    if (line2) {
+      hubText.appendChild(document.createElement('br'));
+      hubText.appendChild(document.createTextNode(line2));
+    }
+  }
+
+  function showOverlay() {
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(function () {
+      try { againBtn.focus(); } catch (e) {}
+    });
+  }
+  function hideOverlay() {
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
   function spin() {
     if (isSpinning) return;
     isSpinning = true;
     spinBtn.disabled = true;
-    overlay.classList.remove('show');
+    hideOverlay();
     clearConfetti();
+    setHubText('GO!');
 
-    // Pick a random result
-    const pick = RESULTS[Math.floor(Math.random() * RESULTS.length)];
-
-    // Calculate target rotation
-    // We want pointer (at 0deg, top) to land on pick.segmentCenter.
-    // Final rotation modulo 360 must equal (360 - segmentCenter) % 360.
-    // Add a small random jitter within the segment so it doesn't stop perfectly centered.
-    const jitter = (Math.random() - 0.5) * 60; // +/- 30 degrees inside the 90 deg wedge
+    const pick = RESULTS[Math.floor(secureRandom() * RESULTS.length)];
+    const jitter = (secureRandom() - 0.5) * 60;
     const targetMod = (360 - pick.segmentCenter + jitter + 360) % 360;
-
-    // Add full spins (6 full turns) for drama; ensure rotation is always increasing.
     const fullTurns = 6 * 360;
     const currentMod = ((currentRotation % 360) + 360) % 360;
-    let delta = (targetMod - currentMod + 360) % 360;
+    const delta = (targetMod - currentMod + 360) % 360;
     const newRotation = currentRotation + fullTurns + delta;
 
     currentRotation = newRotation;
     stage.classList.add('spinning');
-    status.textContent = 'Spinning...';
+    statusEl.textContent = 'Spinning…';
 
-    // Apply the rotation; CSS handles the 5s cubic-bezier easing
-    wheel.style.transform = `rotate(${newRotation}deg)`;
+    wheel.style.transform = 'rotate(' + newRotation + 'deg)';
 
-    // After the spin duration, reveal the result
-    setTimeout(() => {
+    window.setTimeout(function () {
       stage.classList.remove('spinning');
       revealResult(pick);
     }, SPIN_DURATION_MS + 50);
@@ -647,49 +699,60 @@
   function revealResult(pick) {
     resultText.textContent = pick.text;
     resultColor.style.background = pick.color;
-    overlay.classList.add('show');
+    showOverlay();
     spawnConfetti(pick.color);
-    status.textContent = 'Result locked in';
+    statusEl.textContent = 'Result locked in';
+    setHubText('SPIN', 'AGAIN');
     isSpinning = false;
     spinBtn.disabled = false;
-    // Haptic on supported devices
-    if (window.navigator && navigator.vibrate) {
-      navigator.vibrate([40, 60, 120]);
-    }
+    if (navigator.vibrate) { try { navigator.vibrate([40, 60, 120]); } catch (e) {} }
   }
 
   function spawnConfetti(primaryColor) {
-    const colors = ['#e63946', '#facc15', '#16a34a', '#1d4ed8', '#1b365d'];
-    const card = resultCard;
+    const palette = ['#e63946', '#facc15', '#16a34a', '#1d4ed8', '#1b365d', '#f3ecd9'];
     for (let i = 0; i < 24; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti';
-      piece.style.left = (10 + Math.random() * 80) + '%';
-      piece.style.background = i % 5 === 0 ? primaryColor : colors[i % colors.length];
-      piece.style.setProperty('--dx', ((Math.random() - 0.5) * 200) + 'px');
-      piece.style.setProperty('--rot', (Math.random() * 1080) + 'deg');
-      piece.style.animationDelay = (Math.random() * 0.3) + 's';
-      card.appendChild(piece);
+      piece.style.left = (10 + secureRandom() * 80) + '%';
+      piece.style.background = i % 5 === 0 ? primaryColor : palette[i % palette.length];
+      piece.style.setProperty('--dx',  ((secureRandom() - 0.5) * 200) + 'px');
+      piece.style.setProperty('--rot', (secureRandom() * 1080) + 'deg');
+      piece.style.animationDelay = (secureRandom() * 0.3) + 's';
+      resultCard.appendChild(piece);
     }
   }
 
   function clearConfetti() {
-    resultCard.querySelectorAll('.confetti').forEach(el => el.remove());
+    const nodes = resultCard.querySelectorAll('.confetti');
+    for (let i = 0; i < nodes.length; i++) nodes[i].remove();
   }
 
   spinBtn.addEventListener('click', spin);
-  againBtn.addEventListener('click', () => {
-    overlay.classList.remove('show');
-    status.textContent = 'Tap spin to give your mate a handicap';
+
+  // Tap the wheel itself (the whole stage area) to spin
+  stage.addEventListener('click', spin);
+  stage.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      spin();
+    }
   });
 
-  // Prevent double-tap zoom on iOS
-  let lastTouch = 0;
-  document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTouch <= 300) e.preventDefault();
-    lastTouch = now;
-  }, { passive: false });
+  againBtn.addEventListener('click', function () {
+    hideOverlay();
+    statusEl.textContent = 'Ready for another?';
+    try { spinBtn.focus(); } catch (e) {}
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && overlay.classList.contains('show')) {
+      hideOverlay();
+    }
+  });
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) hideOverlay();
+  });
+})();
 </script>
 </body>
 </html>

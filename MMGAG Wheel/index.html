@@ -2,72 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#0a3d2e">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b365d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Make Me Good At Golf — two on-course games (Club Roulette and Reverse Twister), the latest podcast episodes, and the YouTube channel, all in one app.">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://img.youtube.com https://i.ytimg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; frame-src https://open.spotify.com; connect-src https://api.allorigins.win https://corsproxy.io https://api.codetabs.com; base-uri 'self'; form-action 'self';">
 <title>MMGAG · The App</title>
 <link rel="icon" type="image/png" href="app-icon.png">
 <link rel="apple-touch-icon" href="app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; }
 
   :root {
-    --bg-deep: #06291f;
-    --bg-mid: #0e4a37;
-    --bg-light: #2b7a59;
-    --gold: #f4c542;
-    --gold-2: #c9962a;
-    --cream: #f6f2e7;
-    --ink: #0b1f17;
-    --ink-soft: #1a3d2f;
-    --shadow-card: 0 12px 40px rgba(0,0,0,0.40);
+    --cream: #f3ecd9;
+    --cream-soft: #faf6e9;
+    --navy: #1b365d;
+    --navy-deep: #122444;
+    --navy-bright: #2752a1;
+    --accent: #e63946;
+    --ink: rgba(27, 54, 93, 0.85);
   }
 
   html, body {
-    margin: 0;
-    padding: 0;
-    color: var(--cream);
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin: 0; padding: 0;
+    color: var(--navy);
+    font-family: 'DM Sans', system-ui, sans-serif;
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: contain;
+    background: var(--cream);
   }
-
   body {
-    background:
-      radial-gradient(ellipse at 50% -10%, #2b7a59 0%, transparent 55%),
-      radial-gradient(ellipse at 110% 110%, #134e3a 0%, transparent 60%),
-      linear-gradient(180deg, #0e4a37 0%, #06291f 100%);
-    background-attachment: fixed;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding:
       calc(env(safe-area-inset-top) + 14px)
-      16px
-      calc(env(safe-area-inset-bottom) + 18px)
-      16px;
+      14px
+      calc(env(safe-area-inset-bottom) + 18px);
     min-height: 100dvh;
-    position: relative;
     overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      radial-gradient(circle at 18% 22%, rgba(255,255,255,0.06) 0 1.2px, transparent 1.4px),
-      radial-gradient(circle at 78% 68%, rgba(255,255,255,0.045) 0 1.2px, transparent 1.4px),
-      radial-gradient(circle at 50% 90%, rgba(255,255,255,0.04) 0 1.2px, transparent 1.4px);
-    background-size: 46px 46px, 62px 62px, 38px 38px;
-    z-index: 0;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 22px, rgba(27,54,93,0.025) 22px 23px),
+      var(--cream);
   }
 
   header {
@@ -75,121 +57,159 @@
     max-width: 480px;
     display: flex;
     justify-content: center;
-    z-index: 1;
+    padding: 6px 0 6px;
   }
   .logo {
     width: 100%;
-    max-width: 260px;
+    max-width: 220px;
     height: auto;
     display: block;
-    border-radius: 22px;
-    box-shadow: var(--shadow-card), 0 0 0 2px rgba(244,197,66,0.55) inset;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 var(--navy);
+    border: 2px solid var(--navy);
   }
 
   main {
     width: 100%;
     max-width: 480px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1;
-    flex: 1;
   }
 
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-weight: 400;
-    letter-spacing: 2.4px;
-    margin: 22px 0 4px;
-    font-size: clamp(32px, 8vw, 42px);
+  /* HERO BLOCK */
+  .hero {
+    margin: 20px 0 14px;
+    padding: 22px 18px;
+    background: var(--navy);
     color: var(--cream);
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    text-align: center;
-    line-height: 1;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 8px 8px 0 var(--accent);
   }
-  .subtitle {
-    margin: 0 0 18px;
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: -36px; top: -36px;
+    width: 130px; height: 130px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.85;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: 22px; bottom: -32px;
+    width: 90px; height: 90px;
+    background: var(--cream);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .hero .eyebrow {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--cream);
+    color: var(--navy);
+    font-weight: 800;
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .hero h1 {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    font-size: clamp(48px, 13vw, 64px);
+    line-height: 0.88;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--cream);
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 .accent {
+    color: var(--accent);
+    -webkit-text-stroke: 0;
+  }
+  .hero .tagline {
+    margin: 14px 0 0;
+    max-width: 320px;
     font-size: 14px;
-    color: rgba(246,242,231,0.8);
-    text-align: center;
-    max-width: 340px;
-    line-height: 1.45;
-    padding: 0 6px;
+    line-height: 1.5;
+    color: rgba(246,242,231,0.85);
+    position: relative;
+    z-index: 1;
   }
 
   /* SECTION HEADERS */
   .section-title {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 10px;
-    margin: 22px 0 12px;
+    margin: 24px 0 12px;
   }
   .section-title h2 {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Anton', sans-serif;
     font-weight: 400;
-    letter-spacing: 2px;
-    font-size: 18px;
-    color: var(--gold);
+    font-size: 26px;
+    color: var(--navy);
     margin: 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
   .section-title .rule {
     flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(244,197,66,0.45) 0%, rgba(244,197,66,0) 100%);
+    height: 3px;
+    background: var(--navy);
+    border-radius: 2px;
+  }
+  .section-title .index {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
   }
 
   /* GAME CARDS */
   .games {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
   .game-card {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
     padding: 16px;
-    border-radius: 18px;
     text-decoration: none;
-    color: var(--cream);
-    border: 1.5px solid rgba(244,197,66,0.35);
-    background: linear-gradient(180deg, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0.22) 100%);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-    transition: transform 0.18s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-    -webkit-tap-highlight-color: transparent;
+    color: var(--navy);
+    background: var(--cream-soft);
+    border: 2px solid var(--navy);
+    border-radius: 14px;
+    transition: transform 0.18s ease, box-shadow 0.25s ease, background 0.25s ease;
     position: relative;
-    overflow: hidden;
+    min-height: 168px;
+    box-shadow: 4px 4px 0 var(--navy);
   }
-  .game-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 18px;
-    pointer-events: none;
-    opacity: 0.0;
-    transition: opacity 0.3s ease;
-    background:
-      radial-gradient(circle at 90% 10%, rgba(244,197,66,0.16) 0%, transparent 60%);
+  .game-card.inverted {
+    background: var(--navy);
+    color: var(--cream);
+    box-shadow: 4px 4px 0 var(--accent);
   }
+  .game-card.inverted .card-title { color: var(--cream); }
+  .game-card.inverted .card-desc  { color: rgba(246,242,231,0.78); }
   .game-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--gold);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(244,197,66,0.2);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--navy);
   }
-  .game-card:hover::before { opacity: 1; }
-  .game-card:active { transform: scale(0.985); }
-
+  .game-card.inverted:hover { box-shadow: 6px 6px 0 var(--accent); }
   .card-art {
-    flex-shrink: 0;
-    width: 64px;
-    height: 64px;
+    width: 56px; height: 56px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.45);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4);
+    margin-bottom: 12px;
+    position: relative;
   }
   .roulette-art {
     background:
@@ -201,16 +221,15 @@
         #eab308 205.71deg 257.14deg,
         #ea580c 257.14deg 308.57deg,
         #dc2626 308.57deg 360deg);
-    position: relative;
   }
-  .roulette-art::after {
-    content: '';
-    position: absolute;
-    width: 24%;
-    height: 24%;
-    background: radial-gradient(circle at 35% 30%, #fff, #b39f6c);
-    border-radius: 50%;
-    border: 2px solid var(--ink);
+  .roulette-art::after, .twister-art::after {
+    content:''; position:absolute;
+    left:50%; top:50%;
+    width:26%; height:26%;
+    transform:translate(-50%,-50%);
+    background: var(--cream);
+    border-radius:50%;
+    border:2px solid var(--navy);
   }
   .twister-art {
     background:
@@ -219,75 +238,74 @@
         #facc15 90deg 180deg,
         #16a34a 180deg 270deg,
         #1d4ed8 270deg 360deg);
-    position: relative;
-  }
-  .twister-art::after {
-    content: '';
-    position: absolute;
-    width: 22%;
-    height: 22%;
-    background: #f3ecd9;
-    border-radius: 50%;
-    border: 2px solid #1b365d;
-  }
-
-  .card-body {
-    flex: 1;
-    min-width: 0;
   }
   .card-title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Anton', sans-serif;
     font-weight: 400;
     font-size: 22px;
-    letter-spacing: 1.4px;
-    color: var(--cream);
-    margin: 0 0 2px;
+    margin: 0 0 4px;
+    color: var(--navy);
     line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
   .card-desc {
-    font-size: 13px;
-    color: rgba(246,242,231,0.72);
+    font-size: 12.5px;
+    color: var(--ink);
     margin: 0;
-    line-height: 1.35;
+    line-height: 1.4;
   }
-  .card-arrow {
-    color: var(--gold);
-    font-size: 22px;
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-  }
-  .game-card:hover .card-arrow { transform: translateX(4px); }
 
-  /* PODCAST */
-  .podcast {
+  /* PODCAST PANEL */
+  .panel {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
+    background: var(--navy);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 2px solid var(--navy);
+    box-shadow: 4px 4px 0 var(--accent);
   }
   .podcast-frame {
     width: 100%;
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
-    background: rgba(0,0,0,0.32);
-    border: 1.5px solid rgba(244,197,66,0.3);
-    box-shadow: var(--shadow-card);
+    background: var(--cream);
   }
   .podcast-frame iframe {
     display: block;
     width: 100%;
-    height: 352px;
+    height: 232px;
     border: 0;
   }
+  .listen-row {
+    text-align: center;
+    margin-top: 12px;
+  }
+  .listen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 22px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--cream);
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--accent);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .listen:hover { transform: translate(-1px,-1px); }
+  .listen:active { transform: scale(0.97); }
 
   /* YOUTUBE */
-  .youtube {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
   .yt-card {
     position: relative;
     display: block;
@@ -296,189 +314,80 @@
     border-radius: 14px;
     overflow: hidden;
     background: #0a0a0a;
-    border: 1.5px solid rgba(244,197,66,0.3);
-    box-shadow: var(--shadow-card);
+    border: 2px solid var(--navy);
+    box-shadow: 4px 4px 0 var(--navy);
     text-decoration: none;
     color: var(--cream);
-    transition: transform 0.2s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    -webkit-tap-highlight-color: transparent;
+    margin-bottom: 12px;
+    transition: transform 0.18s ease, box-shadow 0.25s ease;
   }
-  .yt-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--gold);
-    box-shadow: 0 14px 36px rgba(0,0,0,0.5);
+  .yt-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--navy); }
+  .yt-card img {
+    display: block; width: 100%; height: 100%;
+    object-fit: cover; opacity: 0.94;
+    transition: opacity 0.25s ease, transform 0.35s ease;
   }
-  .yt-card:active { transform: scale(0.99); }
-  .yt-thumb-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.35s ease, opacity 0.25s ease;
-    opacity: 0.92;
-  }
-  .yt-card:hover .yt-thumb-img { transform: scale(1.04); opacity: 1; }
+  .yt-card:hover img { transform: scale(1.03); opacity: 1; }
+  .yt-card.is-loading img { opacity: 0.4; }
   .yt-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.78) 100%),
-      radial-gradient(circle at 50% 45%, rgba(0,0,0,0.15) 0%, transparent 60%);
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.82) 100%);
     pointer-events: none;
   }
   .yt-play-btn {
-    width: clamp(56px, 16vw, 78px);
-    height: clamp(56px, 16vw, 78px);
+    width: clamp(56px, 16vw, 72px);
+    height: clamp(56px, 16vw, 72px);
     border-radius: 50%;
-    background: rgba(255, 0, 51, 0.92);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 0 0 6px rgba(255,255,255,0.06);
-    transition: transform 0.2s ease, background 0.2s ease;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transition: transform 0.2s ease;
   }
-  .yt-card:hover .yt-play-btn {
-    transform: scale(1.08);
-    background: #ff0033;
-  }
-  .yt-play-btn svg {
-    width: 40%;
-    height: 40%;
-    color: #fff;
-    display: block;
-    /* tiny optical nudge so the triangle's visual centroid sits dead-centre */
-    transform: translateX(6%);
-  }
+  .yt-card:hover .yt-play-btn { transform: scale(1.08); }
+  .yt-play-btn svg { width: 40%; height: 40%; color: #fff; transform: translateX(6%); display: block; }
   .yt-info {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
+    position: absolute; left: 0; right: 0; bottom: 0;
     padding: 14px 16px;
     pointer-events: none;
   }
   .yt-channel {
     display: block;
-    font-size: 10.5px;
-    letter-spacing: 3.6px;
-    color: rgba(255,255,255,0.75);
-    text-transform: uppercase;
-    font-weight: 700;
+    font-size: 10.5px; letter-spacing: 0.32em;
+    color: rgba(255,255,255,0.78);
+    text-transform: uppercase; font-weight: 800;
   }
   .yt-title {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Anton', sans-serif;
     font-size: clamp(18px, 4.8vw, 22px);
-    letter-spacing: 0.9px;
     margin-top: 4px;
+    line-height: 1.05;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     color: var(--cream);
     text-shadow: 0 2px 6px rgba(0,0,0,0.7);
-    line-height: 1.15;
   }
   .yt-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: rgba(0,0,0,0.7);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.4px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    position: absolute; top: 12px; left: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: 999px;
+    background: var(--accent); color: var(--cream);
+    font-size: 10px; font-weight: 800; letter-spacing: 1.4px;
   }
   .yt-badge-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #ff4444;
-    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.6);
-    animation: livePulse 1.8s infinite;
-  }
-  .yt-card.is-loading .yt-thumb-img { opacity: 0.45; }
-  .watch-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    margin: 4px auto 0;
-    padding: 11px 22px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgba(255,0,51,0.18) 0%, rgba(255,0,51,0.05) 100%);
-    border: 1.5px solid rgba(255,77,77,0.55);
-    color: var(--cream);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-decoration: none;
-    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .watch-link:hover {
-    background: linear-gradient(180deg, rgba(255,0,51,0.32) 0%, rgba(255,0,51,0.14) 100%);
-    border-color: #ff4d4d;
-    box-shadow: 0 6px 18px rgba(255,77,77,0.28);
-  }
-  .watch-link:active { transform: scale(0.97); }
-  .watch-link svg { width: 18px; height: 18px; color: #ff4d4d; }
-  .podcast-note {
-    font-size: 12px;
-    color: rgba(246,242,231,0.6);
-    text-align: center;
-    line-height: 1.45;
-    margin: 0;
-  }
-
-  /* LISTEN PILL (Acast) */
-  .listen {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    margin: 4px auto 0;
-    padding: 11px 22px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgba(244,197,66,0.18) 0%, rgba(244,197,66,0.06) 100%);
-    border: 1.5px solid rgba(244,197,66,0.55);
-    color: var(--cream);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-decoration: none;
-    transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .listen:hover {
-    background: linear-gradient(180deg, rgba(244,197,66,0.3) 0%, rgba(244,197,66,0.15) 100%);
-    border-color: var(--gold);
-    box-shadow: 0 6px 18px rgba(244,197,66,0.28);
-  }
-  .listen:active { transform: scale(0.97); }
-  .listen svg { width: 16px; height: 16px; color: var(--gold); }
-  .listen .listen-pulse {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ff4d4d;
-    box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7);
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 0 rgba(255,255,255,0.6);
     animation: livePulse 1.8s infinite;
   }
   @keyframes livePulse {
-    0%   { box-shadow: 0 0 0 0   rgba(255,77,77,0.7); }
-    70%  { box-shadow: 0 0 0 9px rgba(255,77,77,0); }
-    100% { box-shadow: 0 0 0 0   rgba(255,77,77,0); }
+    0%   { box-shadow: 0 0 0 0   rgba(255,255,255,0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0   rgba(255,255,255,0); }
   }
 
   /* SOCIALS */
@@ -488,62 +397,63 @@
     text-align: center;
   }
   .socials-label {
-    font-size: 11px;
-    letter-spacing: 2.4px;
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-    margin: 0 0 10px;
+    color: var(--navy);
+    margin: 0 0 12px;
   }
   .social-row {
     display: flex;
     justify-content: center;
-    gap: 14px;
+    gap: 12px;
   }
   .social-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.32);
-    border: 1.5px solid rgba(244,197,66,0.45);
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--navy);
+    border: 2px solid var(--navy);
     color: var(--cream);
-    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     text-decoration: none;
+    box-shadow: 3px 3px 0 var(--accent);
     -webkit-tap-highlight-color: transparent;
   }
-  .social-link:hover { transform: translateY(-2px); border-color: var(--gold); }
-  .social-link:active { transform: scale(0.94); }
+  .social-link:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--accent); }
+  .social-link:active { transform: scale(0.96); }
   .social-link svg { width: 22px; height: 22px; display: block; }
-  .social-link.yt:hover { background: #ff0033; border-color: #ff0033; color: #fff; }
-  .social-link.ig:hover {
-    background: linear-gradient(135deg, #feda77 0%, #f58529 25%, #dd2a7b 55%, #8134af 80%, #515bd4 100%);
-    border-color: #dd2a7b;
-    color: #fff;
-  }
-  .social-link.fb:hover { background: #1877f2; border-color: #1877f2; color: #fff; }
-  .social-link.tt:hover {
-    background: linear-gradient(135deg, #25f4ee 0%, #000000 50%, #fe2c55 100%);
-    border-color: #fe2c55;
-    color: #fff;
-  }
 
   .footer-note {
-    font-size: 11.5px;
-    color: rgba(246,242,231,0.5);
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
     margin: 18px 0 4px;
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: 0.4em;
     text-transform: uppercase;
   }
 
-  @media (max-width: 360px) {
-    .logo { max-width: 220px; }
-    .card-title { font-size: 20px; }
-    .card-desc { font-size: 12.5px; }
-    .podcast-frame iframe { height: 320px; }
+  /* Keyboard focus ring */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* Respect users who prefer less motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 </style>
 </head>
@@ -554,133 +464,107 @@
 </header>
 
 <main>
-  <h1>The Clubhouse</h1>
-  <p class="subtitle">Two games, one pod, and zero pressure. Pick something below.</p>
+
+  <section class="hero">
+    <span class="eyebrow">Make Me Good At Golf</span>
+    <h1>The<br>Club<br><span class="accent">House.</span></h1>
+    <p class="tagline">Two games, one podcast, and zero pressure. Pick a wheel, hit play, ruin your mate's round.</p>
+  </section>
 
   <div class="section-title">
+    <span class="index">01 /</span>
     <h2>Play</h2>
-    <span class="rule" aria-hidden="true"></span>
+    <span class="rule"></span>
   </div>
 
   <nav class="games" aria-label="Games">
     <a class="game-card" href="roulette.html">
       <span class="card-art roulette-art" aria-hidden="true"></span>
-      <span class="card-body">
-        <span class="card-title">Club Roulette</span>
-        <span class="card-desc">Spin the wheel to nominate the club your partner has to use for their next shot.</span>
-      </span>
-      <span class="card-arrow" aria-hidden="true">→</span>
+      <span class="card-title">Club Roulette</span>
+      <span class="card-desc">Spin to pick their next club.</span>
     </a>
-    <a class="game-card" href="twister.html">
+    <a class="game-card inverted" href="twister.html">
       <span class="card-art twister-art" aria-hidden="true"></span>
-      <span class="card-body">
-        <span class="card-title">Reverse Twister</span>
-        <span class="card-desc">Spin for a body part to swing without: left hand, right hand, left foot, right foot.</span>
-      </span>
-      <span class="card-arrow" aria-hidden="true">→</span>
+      <span class="card-title">Reverse Twister</span>
+      <span class="card-desc">Take a hand or foot away.</span>
     </a>
   </nav>
 
   <div class="section-title">
+    <span class="index">02 /</span>
     <h2>The Podcast</h2>
-    <span class="rule" aria-hidden="true"></span>
+    <span class="rule"></span>
   </div>
 
-  <section class="podcast" aria-label="Make Me Good At Golf podcast">
+  <div class="panel">
     <div class="podcast-frame">
-      <iframe
-        title="Make Me Good At Golf on Spotify"
-        src="https://open.spotify.com/embed/show/3DBJkGyAVUPdyEbeNa4sU3?utm_source=generator&amp;theme=0"
-        loading="lazy"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        allowfullscreen></iframe>
+      <iframe title="MMGAG on Spotify"
+        src="https://open.spotify.com/embed/show/3DBJkGyAVUPdyEbeNa4sU3?utm_source=generator"
+        loading="lazy" allowfullscreen
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
     </div>
-    <p class="podcast-note">Browse and preview every episode above. For full playback without a sign-in, hit the Acast link.</p>
-    <a class="listen" href="https://shows.acast.com/make-me-good-at-golf" target="_blank" rel="noopener noreferrer" aria-label="Listen on Acast">
-      <span class="listen-pulse" aria-hidden="true"></span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-        <path d="M21 19a2 2 0 0 1-2 2h-1v-6h3z"/>
-        <path d="M3 19a2 2 0 0 0 2 2h1v-6H3z"/>
-      </svg>
-      <span>Listen on Acast (no account)</span>
-    </a>
-  </section>
+    <div class="listen-row">
+      <a class="listen" href="https://shows.acast.com/make-me-good-at-golf" target="_blank" rel="noopener noreferrer">
+        Listen on Acast
+      </a>
+    </div>
+  </div>
 
   <div class="section-title">
-    <h2>Watch on YouTube</h2>
-    <span class="rule" aria-hidden="true"></span>
+    <span class="index">03 /</span>
+    <h2>YouTube</h2>
+    <span class="rule"></span>
   </div>
 
-  <section class="youtube" aria-label="Make Me Good At Golf on YouTube">
-    <a id="yt-card" class="yt-card is-loading"
-       href="https://www.youtube.com/@MakeMeGoodAtGolf"
-       target="_blank" rel="noopener noreferrer"
-       aria-label="Watch the latest Make Me Good At Golf video on YouTube">
-      <img id="yt-thumb-img" class="yt-thumb-img"
-           src="https://img.youtube.com/vi/uk0T1Ps2_34/hqdefault.jpg"
-           alt="Make Me Good At Golf latest video thumbnail"
-           loading="lazy"
-           referrerpolicy="no-referrer">
-      <span class="yt-overlay" aria-hidden="true">
-        <span class="yt-play-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M9 6v12l9-6z"/>
-          </svg>
-        </span>
+  <a id="yt-card" class="yt-card is-loading"
+     href="https://www.youtube.com/@MakeMeGoodAtGolf"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Watch the latest Make Me Good At Golf video">
+    <img id="yt-thumb-img"
+         src="https://img.youtube.com/vi/uk0T1Ps2_34/hqdefault.jpg"
+         alt="Make Me Good At Golf latest video thumbnail"
+         loading="lazy" referrerpolicy="no-referrer">
+    <span class="yt-overlay" aria-hidden="true">
+      <span class="yt-play-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M9 6v12l9-6z"/>
+        </svg>
       </span>
-      <span class="yt-badge" aria-hidden="true">
-        <span class="yt-badge-dot"></span>
-        <span>LATEST</span>
-      </span>
-      <span class="yt-info">
-        <span class="yt-channel">Make Me Good At Golf</span>
-        <span class="yt-title" id="yt-title">Newest episode &mdash; tap to watch on YouTube</span>
-      </span>
-    </a>
-    <a class="watch-link" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="Open the MMGAG YouTube channel">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-      </svg>
-      <span>Open the YouTube channel</span>
-    </a>
-  </section>
+    </span>
+    <span class="yt-badge" aria-hidden="true">
+      <span class="yt-badge-dot"></span>
+      <span>LATEST</span>
+    </span>
+    <span class="yt-info">
+      <span class="yt-channel">Make Me Good At Golf</span>
+      <span class="yt-title" id="yt-title">Newest episode &mdash; tap to watch on YouTube</span>
+    </span>
+  </a>
 
-  <section class="socials" aria-label="Find Make Me Good At Golf on social media">
+  <section class="socials">
     <p class="socials-label">Find us on socials</p>
     <div class="social-row">
-      <a class="social-link yt" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on YouTube">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-        </svg>
+      <a class="social-link" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
       </a>
-      <a class="social-link ig" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-        </svg>
+      <a class="social-link" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
-      <a class="social-link fb" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Facebook">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
-        </svg>
+      <a class="social-link" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>
       </a>
-      <a class="social-link tt" href="https://shorturl.at/FNKSz" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on TikTok">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.12Z"/>
-        </svg>
+      <a class="social-link" href="https://shorturl.at/FNKSz" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.69a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.12Z"/></svg>
       </a>
     </div>
   </section>
 
-  <p class="footer-note">Make Me Good At Golf</p>
+  <p class="footer-note">M · M · G · A · G</p>
 </main>
 
 <script>
-  // Pull the latest video from the public RSS feed via CORS-friendly proxies,
-  // then upgrade the YouTube card thumbnail, title, and link. If every source
-  // fails, the card keeps its baseline thumbnail and links to the channel.
+  // Upgrade the YouTube card to the channel's latest video using the public
+  // RSS feed via CORS-friendly proxies. Falls back silently to the baseline.
   (function () {
     const CHANNEL_ID = 'UCJHAGoxgUMyeJppjDQzDp1w';
     const FEED_URL   = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
@@ -697,18 +581,15 @@
 
     function decodeXml(s) {
       return s
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&apos;/g, "'")
-        .replace(/&#39;/g, "'");
+        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#39;/g, "'");
     }
 
     function fetchWithTimeout(url, ms) {
       const ctrl = new AbortController();
       const timer = setTimeout(function () { ctrl.abort(); }, ms);
-      return fetch(url, { signal: ctrl.signal }).finally(function () { clearTimeout(timer); });
+      return fetch(url, { signal: ctrl.signal })
+        .finally(function () { clearTimeout(timer); });
     }
 
     function tryProxies(i) {
@@ -716,30 +597,23 @@
         card.classList.remove('is-loading');
         return;
       }
-      const url = PROXIES[i](FEED_URL);
-      fetchWithTimeout(url, 6000)
+      fetchWithTimeout(PROXIES[i](FEED_URL), 6000)
         .then(function (res) {
           if (!res.ok) throw new Error('bad status ' + res.status);
           return res.text();
         })
         .then(function (text) {
-          if (!text || text.indexOf('<yt:videoId>') === -1) {
-            throw new Error('no videoId in response');
-          }
-          // Grab the first <entry> block, then pull id + title from it.
-          const entryMatch = text.match(/<entry>[\s\S]*?<\/entry>/);
-          const block = entryMatch ? entryMatch[0] : text;
-          const idMatch = block.match(/<yt:videoId>([\w-]+)<\/yt:videoId>/);
+          if (!text || text.indexOf('<yt:videoId>') === -1) throw new Error('no videoId');
+          const entry = (text.match(/<entry>[\s\S]*?<\/entry>/) || [text])[0];
+          const idMatch = entry.match(/<yt:videoId>([\w-]+)<\/yt:videoId>/);
           if (!idMatch) throw new Error('no id');
           const videoId = idMatch[1];
 
-          // Try maxres first, fall back to hq.
           const maxRes = 'https://img.youtube.com/vi/' + videoId + '/maxresdefault.jpg';
           const hqRes  = 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
 
           const probe = new Image();
           probe.onload = function () {
-            // maxres exists if naturalWidth > 120 (YouTube returns a 120x90 placeholder when missing)
             img.src = probe.naturalWidth > 120 ? maxRes : hqRes;
             card.classList.remove('is-loading');
           };
@@ -751,7 +625,7 @@
 
           card.href = 'https://www.youtube.com/watch?v=' + videoId;
 
-          const titleMatch = block.match(/<title>([\s\S]*?)<\/title>/);
+          const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
           if (titleMatch) {
             const cleaned = decodeXml(titleMatch[1]).trim();
             if (cleaned) titleEl.textContent = cleaned;
