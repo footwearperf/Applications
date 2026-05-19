@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#f3ecd9" />
+<title>Make Me Good at Golf Twister</title>
+<style>
+  :root {
+    --cream: #f3ecd9;
+    --navy: #1b365d;
+    --navy-dark: #122444;
+    --red: #e63946;
+    --blue: #1d4ed8;
+    --yellow: #facc15;
+    --green: #16a34a;
+    --shadow: 0 10px 30px rgba(0,0,0,0.18);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--cream);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--navy);
+    overflow-x: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 20% 0%, #fff5dc 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, #ede2c4 0%, transparent 50%),
+      var(--cream);
+  }
+
+  .app {
+    width: 100%;
+    max-width: 480px;
+    padding: 18px 18px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+  }
+
+  .logo-wrap img {
+    width: 75%;
+    max-width: 280px;
+    height: auto;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .title {
+    text-align: center;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .title .small {
+    display: block;
+    font-size: 14px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+
+  .title .big {
+    display: block;
+    font-family: 'Brush Script MT', 'Snell Roundhand', cursive;
+    font-size: 56px;
+    color: var(--navy);
+    transform: rotate(-3deg);
+    text-shadow: 2px 3px 0 rgba(27, 54, 93, 0.12);
+  }
+
+  .stage {
+    position: relative;
+    width: min(86vw, 360px);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pointer {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 28px solid var(--navy);
+    z-index: 5;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+  }
+
+  .pointer::after {
+    content: '';
+    position: absolute;
+    top: -34px;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--navy);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  }
+
+  .wheel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background:
+      conic-gradient(
+        var(--red) 0deg 90deg,
+        var(--yellow) 90deg 180deg,
+        var(--green) 180deg 270deg,
+        var(--blue) 270deg 360deg
+      );
+    box-shadow:
+      0 0 0 8px var(--navy),
+      0 0 0 12px var(--cream),
+      0 0 0 14px rgba(27, 54, 93, 0.5),
+      0 18px 40px rgba(0,0,0,0.25);
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.21, 1);
+    transform: rotate(0deg);
+  }
+
+  .wheel .label {
+    position: absolute;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+    width: 110px;
+    line-height: 1.15;
+    pointer-events: none;
+  }
+
+  /* Quadrants are arranged so each label sits in its quadrant.
+     With pointer at top (0°), quadrant 1 (0–90°) is the top-right wedge. */
+  .label.q1 { top: 22%; right: 12%; }   /* Top-right: RED */
+  .label.q2 { bottom: 12%; right: 12%; } /* Bottom-right: YELLOW */
+  .label.q3 { bottom: 22%; left: 12%; }  /* Bottom-left: GREEN */
+  .label.q4 { top: 12%; left: 12%; }     /* Top-left: BLUE */
+
+  .label.q2 { color: #1b365d; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+
+  .hub {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22%;
+    height: 22%;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 6px solid var(--navy);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .hub-text {
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--navy);
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  /* Spin button */
+  .spin-btn {
+    appearance: none;
+    border: none;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    padding: 18px 48px;
+    border-radius: 999px;
+    box-shadow: 0 8px 0 var(--navy-dark), 0 12px 24px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+    margin-top: 4px;
+    width: 80%;
+    max-width: 280px;
+  }
+
+  .spin-btn:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 4px 0 var(--navy-dark), 0 6px 12px rgba(0,0,0,0.25);
+  }
+
+  .spin-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* Result overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 36, 68, 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .result-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--cream);
+    border-radius: 24px;
+    padding: 30px 24px 26px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    transform: scale(0.5) rotate(-6deg);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .overlay.show .result-card {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  .result-color-bar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    animation: bouncein 0.6s 0.15s both;
+  }
+
+  .result-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.7;
+    margin: 0 0 6px;
+  }
+
+  .result-text {
+    font-size: 30px;
+    font-weight: 900;
+    margin: 0 0 4px;
+    color: var(--navy);
+    line-height: 1.1;
+    animation: pop 0.5s 0.25s both;
+  }
+
+  .result-sub {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.6;
+    margin: 6px 0 18px;
+  }
+
+  .again-btn {
+    appearance: none;
+    border: none;
+    background: var(--navy);
+    color: var(--cream);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    padding: 12px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 var(--navy-dark);
+  }
+
+  .again-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--navy-dark);
+  }
+
+  /* Confetti pieces */
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    top: -20px;
+    opacity: 0;
+    border-radius: 2px;
+  }
+
+  .overlay.show .confetti {
+    animation: fall 1.8s linear forwards;
+  }
+
+  /* Status text under wheel */
+  .status {
+    min-height: 22px;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.7;
+    text-align: center;
+  }
+
+  /* Pulse during spin */
+  .stage.spinning .pointer {
+    animation: shake 0.12s infinite;
+  }
+
+  /* Animations */
+  @keyframes pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes bouncein {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(6deg); }
+  }
+
+  @keyframes fall {
+    0% { transform: translate(0, -30px) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--dx, 0), 480px) rotate(var(--rot, 720deg)); opacity: 0; }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 8px var(--navy), 0 0 0 12px var(--cream), 0 0 0 14px rgba(27, 54, 93, 0.5), 0 18px 40px rgba(0,0,0,0.25); }
+    50% { box-shadow: 0 0 0 8px var(--navy), 0 0 0 14px var(--cream), 0 0 0 22px rgba(27, 54, 93, 0.25), 0 22px 50px rgba(0,0,0,0.3); }
+  }
+
+  .footer {
+    margin-top: 4px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.45;
+  }
+
+  /* SOCIALS */
+  .socials {
+    width: 100%;
+    margin: 14px 0 4px;
+    text-align: center;
+  }
+  .socials-label {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.7;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(27, 54, 93, 0.08);
+    border: 1.5px solid rgba(27, 54, 93, 0.4);
+    color: var(--navy);
+    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease, color 0.2s ease;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .social-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--navy);
+  }
+  .social-link:active { transform: scale(0.94); }
+  .social-link svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+  .social-link.yt:hover {
+    background: #ff0033;
+    border-color: #ff0033;
+    color: #fff;
+  }
+  .social-link.ig:hover {
+    background: linear-gradient(135deg, #feda77 0%, #f58529 25%, #dd2a7b 55%, #8134af 80%, #515bd4 100%);
+    border-color: #dd2a7b;
+    color: #fff;
+  }
+  .social-link.fb:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="logo-wrap">
+      <img src="MMGAGLogo.jpeg" alt="Make Me Good At Golf" />
+    </div>
+
+    <h1 class="title">
+      <span class="big">Twister</span>
+    </h1>
+
+    <div class="stage" id="stage">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel">
+        <div class="label q1">LEFT<br/>HAND</div>
+        <div class="label q2">RIGHT<br/>HAND</div>
+        <div class="label q3">LEFT<br/>FOOT</div>
+        <div class="label q4">RIGHT<br/>FOOT</div>
+      </div>
+      <div class="hub">
+        <span class="hub-text">SPIN<br/>IT</span>
+      </div>
+    </div>
+
+    <div class="status" id="status">Tap spin to give your mate a handicap</div>
+
+    <button class="spin-btn" id="spinBtn">SPIN</button>
+
+    <section class="socials" aria-label="Find Make Me Good At Golf on social media">
+      <p class="socials-label">Find us on socials</p>
+      <div class="social-row">
+        <a class="social-link yt" href="https://www.youtube.com/@MakeMeGoodAtGolf" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on YouTube">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </a>
+        <a class="social-link ig" href="https://www.instagram.com/makemegoodatgolf/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </a>
+        <a class="social-link fb" href="https://www.facebook.com/p/Make-Me-Good-At-Golf-61578150490295/" target="_blank" rel="noopener noreferrer" aria-label="MMGAG on Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">For entertainment on the fairway only</div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="result-card" id="resultCard">
+      <div class="result-color-bar" id="resultColor"></div>
+      <p class="result-eyebrow">Your playing partner must play their</p>
+      <h2 class="result-text" id="resultText">-</h2>
+      <p class="result-sub">Out of play</p>
+      <button class="again-btn" id="againBtn">SPIN AGAIN</button>
+    </div>
+  </div>
+
+<script>
+  /*
+    Wheel quadrant layout (with pointer at the top, 0deg):
+    - The pointer points at the segment whose angular range straddles the
+      top of the wheel. With our conic-gradient, the segments are:
+        0–90deg   : RED    (top-right wedge)
+        90–180deg : YELLOW (bottom-right wedge)
+        180–270deg: GREEN  (bottom-left wedge)
+        270–360deg: BLUE   (top-left wedge)
+    - The conic-gradient starts at 12 o'clock and sweeps clockwise.
+    - When the wheel rotates clockwise by angle R (CSS transform: rotate),
+      the segment originally centered at angle C ends up centered at C + R.
+    - The pointer is at the top (angle 0). For the pointer to land on a
+      segment originally centered at C, we need C + R = 360k, i.e.
+      R = -C mod 360. We'll add a few full spins for drama.
+  */
+  const RESULTS = [
+    { id: 'LEFT_HAND',  text: 'Left Hand',  color: '#e63946', segmentCenter: 45  },  // RED
+    { id: 'RIGHT_HAND', text: 'Right Hand', color: '#facc15', segmentCenter: 135 }, // YELLOW
+    { id: 'LEFT_FOOT',  text: 'Left Foot',  color: '#16a34a', segmentCenter: 225 }, // GREEN
+    { id: 'RIGHT_FOOT', text: 'Right Foot', color: '#1d4ed8', segmentCenter: 315 }, // BLUE
+  ];
+
+  const wheel = document.getElementById('wheel');
+  const stage = document.getElementById('stage');
+  const spinBtn = document.getElementById('spinBtn');
+  const status = document.getElementById('status');
+  const overlay = document.getElementById('overlay');
+  const resultText = document.getElementById('resultText');
+  const resultColor = document.getElementById('resultColor');
+  const resultCard = document.getElementById('resultCard');
+  const againBtn = document.getElementById('againBtn');
+
+  let currentRotation = 0;
+  let isSpinning = false;
+  const SPIN_DURATION_MS = 5000;
+
+  function spin() {
+    if (isSpinning) return;
+    isSpinning = true;
+    spinBtn.disabled = true;
+    overlay.classList.remove('show');
+    clearConfetti();
+
+    // Pick a random result
+    const pick = RESULTS[Math.floor(Math.random() * RESULTS.length)];
+
+    // Calculate target rotation
+    // We want pointer (at 0deg, top) to land on pick.segmentCenter.
+    // Final rotation modulo 360 must equal (360 - segmentCenter) % 360.
+    // Add a small random jitter within the segment so it doesn't stop perfectly centered.
+    const jitter = (Math.random() - 0.5) * 60; // +/- 30 degrees inside the 90 deg wedge
+    const targetMod = (360 - pick.segmentCenter + jitter + 360) % 360;
+
+    // Add full spins (6 full turns) for drama; ensure rotation is always increasing.
+    const fullTurns = 6 * 360;
+    const currentMod = ((currentRotation % 360) + 360) % 360;
+    let delta = (targetMod - currentMod + 360) % 360;
+    const newRotation = currentRotation + fullTurns + delta;
+
+    currentRotation = newRotation;
+    stage.classList.add('spinning');
+    status.textContent = 'Spinning...';
+
+    // Apply the rotation; CSS handles the 5s cubic-bezier easing
+    wheel.style.transform = `rotate(${newRotation}deg)`;
+
+    // After the spin duration, reveal the result
+    setTimeout(() => {
+      stage.classList.remove('spinning');
+      revealResult(pick);
+    }, SPIN_DURATION_MS + 50);
+  }
+
+  function revealResult(pick) {
+    resultText.textContent = pick.text;
+    resultColor.style.background = pick.color;
+    overlay.classList.add('show');
+    spawnConfetti(pick.color);
+    status.textContent = 'Result locked in';
+    isSpinning = false;
+    spinBtn.disabled = false;
+    // Haptic on supported devices
+    if (window.navigator && navigator.vibrate) {
+      navigator.vibrate([40, 60, 120]);
+    }
+  }
+
+  function spawnConfetti(primaryColor) {
+    const colors = ['#e63946', '#facc15', '#16a34a', '#1d4ed8', '#1b365d'];
+    const card = resultCard;
+    for (let i = 0; i < 24; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti';
+      piece.style.left = (10 + Math.random() * 80) + '%';
+      piece.style.background = i % 5 === 0 ? primaryColor : colors[i % colors.length];
+      piece.style.setProperty('--dx', ((Math.random() - 0.5) * 200) + 'px');
+      piece.style.setProperty('--rot', (Math.random() * 1080) + 'deg');
+      piece.style.animationDelay = (Math.random() * 0.3) + 's';
+      card.appendChild(piece);
+    }
+  }
+
+  function clearConfetti() {
+    resultCard.querySelectorAll('.confetti').forEach(el => el.remove());
+  }
+
+  spinBtn.addEventListener('click', spin);
+  againBtn.addEventListener('click', () => {
+    overlay.classList.remove('show');
+    status.textContent = 'Tap spin to give your mate a handicap';
+  });
+
+  // Prevent double-tap zoom on iOS
+  let lastTouch = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouch <= 300) e.preventDefault();
+    lastTouch = now;
+  }, { passive: false });
+</script>
+</body>
+</html>
