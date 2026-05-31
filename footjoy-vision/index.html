@@ -53,7 +53,7 @@
 
   <!-- FIXTURE -->
   <section class="screen" id="screen-fixture">
-    <button class="linkbtn" id="backToAccount">‹ Back to stores</button>
+    <button class="backbtn" id="backToAccount">‹ Back to stores</button>
     <h2>What are you auditing?</h2>
     <p class="sub" id="fixtureStore"></p>
     <div class="grid" id="fixtureGrid"></div>
@@ -61,7 +61,7 @@
 
   <!-- CAPTURE -->
   <section class="screen" id="screen-capture">
-    <button class="linkbtn" id="backToFixture">‹ Back to fixtures</button>
+    <button class="backbtn" id="backToFixture">‹ Back to fixtures</button>
     <h2 id="captureTitle">Capture</h2>
     <div class="tip"><span class="b">!</span><span class="t" id="captureTip"></span></div>
     <img class="preview hidden" id="preview" alt="captured photo">
@@ -74,25 +74,47 @@
 
   <!-- REVIEW -->
   <section class="screen" id="screen-review">
-    <h2>Review score</h2>
     <div class="banner hidden" id="reviewBanner"></div>
-    <div class="scorehdr">
-      <div><div style="font-size:11px;color:#cbd5e1">DRAFT SCORE</div><div class="val"><span id="scoreVal">0</span><small> / <span id="scoreMax">0</span></small></div></div>
-      <span class="gradechip" id="gradeChip">Par</span>
+    <div class="scorehead" id="scorehead">
+      <div class="gauge" id="gauge">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#e6e9ee" stroke-width="18"></circle>
+          <circle id="arc" cx="100" cy="100" r="80" fill="none" stroke="#c0272d" stroke-width="18" stroke-linecap="round" stroke-dasharray="502.65" stroke-dashoffset="502.65"></circle>
+        </svg>
+        <div class="center"><div class="pct" id="pctNum">0%</div><div class="score" id="scoreNum">0 / 0</div></div>
+      </div>
+      <span class="gradechip" id="gradeChip">—</span>
+      <div class="dockinfo"><span class="g" id="gradeSm">—</span><span class="s" id="scoreSm"></span></div>
     </div>
-    <p class="sub">Tap a row to adjust the verdict. Points follow the verdict.</p>
-    <div id="critList"></div>
-    <button class="btn primary" id="saveBtn">Confirm &amp; save</button>
-    <div class="spin hidden" id="saveSpin">Saving…</div>
+    <div id="reviewBody" class="hidden">
+      <p class="sub">Tap a row to adjust the verdict. Points follow the verdict.</p>
+      <div id="critList"></div>
+      <div class="footer">
+        <button class="backbtn" id="reviewBack">‹ Retake</button>
+        <button class="btn primary" id="saveBtn" style="flex:1">Confirm &amp; save</button>
+      </div>
+      <div class="spin hidden" id="saveSpin">Saving…</div>
+    </div>
   </section>
 
   <!-- HISTORY -->
   <section class="screen" id="screen-history">
-    <button class="linkbtn" id="backFromHistory">‹ New audit</button>
+    <button class="backbtn" id="backFromHistory">‹ New audit</button>
     <h2 id="historyTitle">Store history</h2>
     <div id="historyList"></div>
   </section>
 </main>
+
+<!-- full-screen blocking loader (shown while the AI is scoring) -->
+<div class="overlay" id="overlay">
+  <div class="loader">
+    <div class="lens"></div>
+    <div class="lbl">Assessing your photo</div>
+    <div class="track"><div class="fill" id="barFill"></div></div>
+    <div class="pctlbl" id="pctLbl">0%</div>
+    <div class="msg" id="loadMsg"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabaseClient.js"></script>

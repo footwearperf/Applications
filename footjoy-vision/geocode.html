@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FootJoy Vision — Geocode stores (admin)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<style>
+  :root{--black:#000;--gold:#c8a84b;--green:#166534;--red:#c0272d;--muted:#6b7280;--line:#e5e7eb;--bg:#f3f4f6;
+    --font:'Barlow',Arial,sans-serif;--head:'Barlow Condensed',var(--font);}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);font-family:var(--font);color:#111;display:flex;justify-content:center;padding:24px 16px 48px;}
+  .card{width:100%;max-width:560px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
+  h1{font-family:var(--head);text-transform:uppercase;letter-spacing:.4px;font-size:22px;margin:0 0 4px;}
+  p.sub{color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 18px;}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600;}
+  input{width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:var(--font);}
+  button{font-family:var(--head);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:14px;
+    border:none;border-radius:8px;padding:13px 18px;cursor:pointer;}
+  .primary{background:var(--black);color:#fff;}.gold{background:var(--gold);color:#3a2c08;}
+  .ghost{background:#fff;color:#000;border:2px solid #111;}
+  button:disabled{opacity:.5;cursor:default;}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .track{height:10px;border-radius:6px;background:#eef2f7;overflow:hidden;margin:16px 0 6px;}
+  .fill{height:100%;width:0;background:var(--green);transition:width .3s ease;}
+  .stat{font-size:13px;color:var(--muted);}
+  .log{margin-top:14px;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12px;line-height:1.5;background:#fafbfc;}
+  .log .ok{color:var(--green);}.log .bad{color:var(--red);}
+  .err{color:var(--red);font-size:13px;margin-top:8px;}
+  .hidden{display:none;}
+  .note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Geocode stores</h1>
+    <p class="sub">One-time admin tool. Looks up map coordinates for every store that doesn't have them yet, so the app can sort stores by nearest. You must be signed in as an admin.</p>
+
+    <div id="loginBox">
+      <label for="email">Admin email</label>
+      <input type="email" id="email" autocomplete="username">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password">
+      <div class="err" id="loginErr"></div>
+      <div class="row"><button class="primary" id="loginBtn">Sign in</button></div>
+    </div>
+
+    <div id="workBox" class="hidden">
+      <div class="stat" id="who"></div>
+      <div class="row">
+        <button class="gold" id="loadBtn">Load stores to geocode</button>
+        <button class="primary hidden" id="startBtn">Start geocoding</button>
+        <button class="ghost hidden" id="stopBtn">Stop</button>
+      </div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="stat" id="stat">—</div>
+      <div class="log hidden" id="log"></div>
+      <p class="note">Uses the free OpenStreetMap service, which allows about one lookup per second, so a few hundred stores takes roughly ten to fifteen minutes. You can stop and re-run any time; it only does the ones still missing. Keep this tab open and your screen awake while it runs.</p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+  const SUPABASE_URL = 'https://mlwzpgtdgfaczgxipbsq.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_bzfK6YCmPIcYm8LfMe1CGA_lS-QETHZ';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true } });
+  const $ = (id) => document.getElementById(id);
+  let accounts = [], stop = false;
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  function log(msg, cls){ const d = document.createElement('div'); if(cls) d.className = cls; d.textContent = msg; $('log').appendChild(d); $('log').scrollTop = $('log').scrollHeight; }
+
+  async function showWork(){
+    const { data:{ user } } = await sb.auth.getUser();
+    if(!user){ return; }
+    $('loginBox').classList.add('hidden'); $('workBox').classList.remove('hidden');
+    $('who').textContent = 'Signed in as ' + user.email;
+  }
+  (async ()=>{ const { data:{ session } } = await sb.auth.getSession(); if(session) showWork(); })();
+
+  $('loginBtn').addEventListener('click', async ()=>{
+    $('loginErr').textContent = ''; $('loginBtn').disabled = true;
+    try { await sb.auth.signInWithPassword({ email:$('email').value.trim(), password:$('password').value }); await showWork(); }
+    catch(e){ $('loginErr').textContent = e.message || 'Sign in failed.'; }
+    finally { $('loginBtn').disabled = false; }
+  });
+
+  $('loadBtn').addEventListener('click', async ()=>{
+    $('loadBtn').disabled = true; $('stat').textContent = 'Loading…';
+    const { data, error } = await sb.rpc('vision_accounts_to_geocode');
+    if(error){ $('stat').textContent = 'Error: ' + error.message; $('loadBtn').disabled = false; return; }
+    accounts = data || [];
+    $('stat').textContent = accounts.length + ' stores need coordinates.';
+    if(accounts.length){ $('startBtn').classList.remove('hidden'); }
+    else { $('stat').textContent = 'All stores already have coordinates. Nothing to do.'; }
+  });
+
+  async function geocode(address){
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=au&q=' + encodeURIComponent(address);
+    const r = await fetch(url, { headers:{ 'Accept':'application/json' } });
+    if(!r.ok) return null;
+    const j = await r.json();
+    if(j && j[0]) return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+    return null;
+  }
+
+  $('startBtn').addEventListener('click', async ()=>{
+    stop = false; $('startBtn').disabled = true; $('loadBtn').classList.add('hidden');
+    $('stopBtn').classList.remove('hidden'); $('log').classList.remove('hidden');
+    let done = 0, failed = 0, i = 0;
+    for(const a of accounts){
+      if(stop){ log('Stopped.'); break; }
+      i++;
+      try{
+        const g = await geocode(a.address);
+        if(g){
+          const { error } = await sb.from('vision_customer_geo').insert({ account_code:a.account_code, lat:g.lat, lng:g.lng, source:'nominatim' });
+          if(error){ failed++; log('✗ ' + a.account_code + ' — save failed: ' + error.message, 'bad'); }
+          else { done++; log('✓ ' + a.account_code, 'ok'); }
+        } else { failed++; log('✗ ' + a.account_code + ' — no match for "' + a.address + '"', 'bad'); }
+      } catch(e){ failed++; log('✗ ' + a.account_code + ' — ' + e.message, 'bad'); }
+      $('fill').style.width = Math.round(i/accounts.length*100) + '%';
+      $('stat').textContent = i + ' / ' + accounts.length + '  ·  ' + done + ' done, ' + failed + ' skipped';
+      await sleep(1100);   // be polite to the free lookup service
+    }
+    $('stopBtn').classList.add('hidden'); $('startBtn').disabled = false; $('startBtn').textContent = 'Run again (remaining)';
+    log('Finished: ' + done + ' geocoded, ' + failed + ' skipped.');
+  });
+  $('stopBtn').addEventListener('click', ()=>{ stop = true; });
+</script>
+</body>
+</html>

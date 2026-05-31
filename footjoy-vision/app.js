@@ -174,69 +174,126 @@
     });
   }
 
+  // ---------- blocking loader (nothing is tappable while scoring) ----------
+  const MESSAGES = [
+    'Convincing the electrons to move faster…',
+    'Bribing the server with virtual cookies…',
+    'Counting to infinity, almost there…',
+    'Teaching hamsters to run on the wheel…',
+    'Untangling the internet cables…',
+    'Asking the data nicely to hurry up…',
+    'Loading… please enjoy this existential pause…',
+    'Generating witty loading message…'
+  ];
+  let barTimer = null, msgTimer = null;
+  function startLoader() {
+    $('overlay').classList.add('show');
+    let p = 0; $('barFill').style.width = '0%'; $('pctLbl').textContent = '0%';
+    barTimer = setInterval(() => { p += (92 - p) * 0.12 + 1; if (p > 92) p = 92; $('barFill').style.width = p.toFixed(0) + '%'; $('pctLbl').textContent = Math.round(p) + '%'; }, 320);
+    const two = MESSAGES.slice().sort(() => Math.random() - 0.5).slice(0, 2);  // exactly two messages
+    const m = $('loadMsg'); m.textContent = two[0]; m.style.opacity = 1;
+    msgTimer = setTimeout(() => { m.style.opacity = 0; setTimeout(() => { m.textContent = two[1]; m.style.opacity = 1; }, 220); }, 2300);
+  }
+  function stopLoader(done) {
+    clearInterval(barTimer); clearTimeout(msgTimer);
+    $('barFill').style.width = '100%'; $('pctLbl').textContent = '100%';
+    setTimeout(() => { $('overlay').classList.remove('show'); if (done) done(); }, 380);
+  }
+
+  // ---------- score gauge (percentage; green only at 70%+) ----------
+  const ARC_C = 502.65;
+  function hueColor(v) { const h = v < 70 ? (v / 70) * 50 : 50 + ((v - 70) / 30) * 75; return `hsl(${h} 68% 44%)`; }
+  function overall() {
+    const items = state.result.items || [];
+    const score = items.reduce((s, i) => s + Number(i.points), 0);
+    const max = items.reduce((s, i) => s + Number(i.max_points), 0) || 1;
+    const pct = Math.round(score / max * 100);
+    state.result.overall = { score, max, pct, grade: FJV.gradeFor(pct) };
+    return state.result.overall;
+  }
+  function setGauge(pct, score, max, grade) {
+    $('arc').style.stroke = hueColor(pct);
+    $('arc').style.strokeDashoffset = (ARC_C * (1 - pct / 100)).toFixed(1);
+    $('pctNum').textContent = pct + '%';
+    $('scoreNum').textContent = fmt(score) + ' / ' + fmt(max);
+    $('gradeChip').textContent = grade; $('gradeSm').textContent = grade;
+    $('scoreSm').textContent = fmt(score) + ' / ' + fmt(max) + ' pts';
+  }
+  function updateGauge() { const o = overall(); setGauge(o.pct, o.score, o.max, o.grade); }
+  function animateGauge(target, then) {
+    const o = overall(), dur = 1300, t0 = performance.now();
+    (function frame(now) {
+      const t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3), v = target * e;
+      $('arc').style.stroke = hueColor(v);
+      $('arc').style.strokeDashoffset = (ARC_C * (1 - v / 100)).toFixed(1);
+      $('pctNum').textContent = Math.round(v) + '%';
+      if (t < 1) requestAnimationFrame(frame);
+      else { setGauge(target, o.score, o.max, o.grade); if (then) then(); }
+    })(performance.now());
+  }
+  function presentScore() {
+    const o = overall();
+    $('scoreNum').textContent = fmt(o.score) + ' / ' + fmt(o.max);
+    animateGauge(o.pct, () => {
+      setGauge(o.pct, o.score, o.max, o.grade);
+      // wait 1 second, then shrink to the top and reveal the criteria to adjust
+      setTimeout(() => {
+        $('scorehead').classList.add('docked');
+        setTimeout(() => $('reviewBody').classList.remove('hidden'), 380);
+      }, 1000);
+    });
+  }
+
   // ---------- score (Edge Function / mock) ----------
   $('scoreBtn').addEventListener('click', async () => {
-    $('captureSpin').classList.remove('hidden');
     state.auditId = crypto.randomUUID();
+    startLoader();
     try {
       const photoBase64 = await blobToBase64(state.blob);
-      state.result = await FJV.evaluate({
-        photo: photoBase64,
-        fixture: state.fixture.label,
-        criteria: state.criteria
-      });
+      state.result = await FJV.evaluate({ photo: photoBase64, fixture: state.fixture.label, criteria: state.criteria });
       renderReview();
-      show('screen-review');
+      stopLoader(() => { show('screen-review'); presentScore(); });
     } catch (e) {
-      alert('Scoring failed: ' + e.message);
-    } finally { $('captureSpin').classList.add('hidden'); }
+      stopLoader(() => alert('Scoring failed: ' + e.message));
+    }
   });
+  $('reviewBack').addEventListener('click', () => show('screen-capture'));
 
   // ---------- review (editable) ----------
   function renderReview() {
+    // reset the gauge and hide the criteria until the gauge has animated + docked
+    $('scorehead').classList.remove('docked');
+    $('reviewBody').classList.add('hidden');
+    $('arc').style.strokeDashoffset = ARC_C; $('arc').style.stroke = '#c0272d';
+    $('pctNum').textContent = '0%'; $('gradeChip').textContent = '—';
     const items = state.result.items || [];
     const byId = {}; state.criteria.forEach(c => byId[c.id] = c);
     $('reviewBanner').classList.toggle('hidden', !state.result.notes || !/mock/i.test(state.result.notes));
     if (state.result.notes && /mock/i.test(state.result.notes)) $('reviewBanner').textContent = 'Preview scores (AI function not deployed yet).';
     const list = $('critList'); list.innerHTML = '';
-    items.forEach((it, idx) => {
+    items.forEach((it) => {
       const c = byId[it.criterion_id] || {};
       const div = document.createElement('div'); div.className = 'crit';
       div.innerHTML = `<div class="r1"><span class="cn">${esc(c.name || 'Criterion')}</span>
         <span><span class="verdict v-${it.verdict}" data-vt>${it.verdict.toUpperCase()}</span><span class="pts" data-pt>${fmt(it.points)}/${fmt(it.max_points)}</span></span></div>
         <div class="reason">${esc(it.reason || '')}</div>
-        <div class="seg">
-          <button data-v="pass">Pass</button><button data-v="partial">Partial</button><button data-v="fail">Fail</button>
-        </div>`;
+        <div class="seg"><button data-v="pass">Pass</button><button data-v="partial">Partial</button><button data-v="fail">Fail</button></div>`;
       const seg = div.querySelector('.seg');
       const refresh = () => {
-        seg.querySelectorAll('button').forEach(b => {
-          b.className = (b.dataset.v === it.verdict) ? ('on ' + b.dataset.v) : '';
-        });
-        const vt = div.querySelector('[data-vt]');
-        vt.className = 'verdict v-' + it.verdict;
-        vt.textContent = it.verdict.toUpperCase();
+        seg.querySelectorAll('button').forEach(b => { b.className = (b.dataset.v === it.verdict) ? ('on ' + b.dataset.v) : ''; });
+        const vt = div.querySelector('[data-vt]'); vt.className = 'verdict v-' + it.verdict; vt.textContent = it.verdict.toUpperCase();
         div.querySelector('[data-pt]').textContent = fmt(it.points) + '/' + fmt(it.max_points);
       };
       seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
         it.verdict = b.dataset.v;
         const full = Number(c.full_points || it.max_points), part = Number(c.partial_points || 0);
         it.points = it.verdict === 'pass' ? full : it.verdict === 'partial' ? part : 0;
-        refresh(); recalc();
+        refresh(); updateGauge();
       }));
       refresh();
       list.appendChild(div);
     });
-    recalc();
-  }
-  function recalc() {
-    const items = state.result.items || [];
-    const score = items.reduce((s, i) => s + Number(i.points), 0);
-    const max = items.reduce((s, i) => s + Number(i.max_points), 0) || 1;
-    const pct = Math.round(score / max * 100);
-    state.result.overall = { score, max, pct, grade: FJV.gradeFor(pct) };
-    $('scoreVal').textContent = fmt(score); $('scoreMax').textContent = fmt(max);
-    $('gradeChip').textContent = state.result.overall.grade;
+    overall(); // compute totals now; the gauge stays at 0 until presentScore animates it
   }
 
   // ---------- save (with offline fallback) ----------
