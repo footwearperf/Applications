@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<title>FootJoy Vision</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://mlwzpgtdgfaczgxipbsq.supabase.co; img-src 'self' data: blob: https://mlwzpgtdgfaczgxipbsq.supabase.co; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; manifest-src 'self'; worker-src 'self';">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FJ Vision">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#111"/><circle cx="24" cy="24" r="15" fill="none" stroke="#c8a84b" stroke-width="3"/><circle cx="24" cy="24" r="6" fill="#fff"/></svg>
+    <span class="title">FootJoy Vision</span>
+  </div>
+  <div class="right">
+    <span><span class="netdot" id="netdot"></span> <span id="netlabel">Online</span></span>
+    <button class="linkbtn hidden" id="syncBtn">Sync</button>
+    <button class="linkbtn hidden" id="signoutBtn">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <!-- LOGIN -->
+  <section class="screen active" id="screen-login">
+    <h2>Sign in</h2>
+    <p class="sub">Use your Acushnet email and password.</p>
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="username" inputmode="email">
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password">
+    <div class="err" id="loginErr"></div>
+    <button class="btn primary" id="loginBtn">Sign in</button>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section class="screen" id="screen-account">
+    <h2>Select store</h2>
+    <p class="sub">Pick any account. Use your location to sort by nearest, or search by name.</p>
+    <button class="btn ghost" id="locBtn">Use my location (nearest first)</button>
+    <label for="acctSearch">Search accounts</label>
+    <input type="search" id="acctSearch" placeholder="Store name or account code">
+    <div id="acctList"></div>
+  </section>
+
+  <!-- FIXTURE -->
+  <section class="screen" id="screen-fixture">
+    <button class="linkbtn" id="backToAccount">‹ Back to stores</button>
+    <h2>What are you auditing?</h2>
+    <p class="sub" id="fixtureStore"></p>
+    <div class="grid" id="fixtureGrid"></div>
+  </section>
+
+  <!-- CAPTURE -->
+  <section class="screen" id="screen-capture">
+    <button class="linkbtn" id="backToFixture">‹ Back to fixtures</button>
+    <h2 id="captureTitle">Capture</h2>
+    <div class="tip"><span class="b">!</span><span class="t" id="captureTip"></span></div>
+    <img class="preview hidden" id="preview" alt="captured photo">
+    <input type="file" accept="image/*" capture="environment" class="capture-input" id="cameraInput">
+    <button class="btn gold" id="takeBtn">Take photo</button>
+    <button class="btn primary hidden" id="scoreBtn">Score this photo</button>
+    <button class="btn ghost hidden" id="retakeBtn">Retake</button>
+    <div class="spin hidden" id="captureSpin">Working…</div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="screen" id="screen-review">
+    <h2>Review score</h2>
+    <div class="banner hidden" id="reviewBanner"></div>
+    <div class="scorehdr">
+      <div><div style="font-size:11px;color:#cbd5e1">DRAFT SCORE</div><div class="val"><span id="scoreVal">0</span><small> / <span id="scoreMax">0</span></small></div></div>
+      <span class="gradechip" id="gradeChip">Par</span>
+    </div>
+    <p class="sub">Tap a row to adjust the verdict. Points follow the verdict.</p>
+    <div id="critList"></div>
+    <button class="btn primary" id="saveBtn">Confirm &amp; save</button>
+    <div class="spin hidden" id="saveSpin">Saving…</div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <button class="linkbtn" id="backFromHistory">‹ New audit</button>
+    <h2 id="historyTitle">Store history</h2>
+    <div id="historyList"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabaseClient.js"></script>
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
